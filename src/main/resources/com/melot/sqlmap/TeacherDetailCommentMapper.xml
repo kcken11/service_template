@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.TeacherDetailCommentMapper">
+	<resultMap id="BaseResultMap"
+		type="com.melot.talkee.driver.domain.TeacherDetailComment">
+		<id column="hist_id" jdbcType="INTEGER" property="histId" />
+		<result column="question_id" jdbcType="INTEGER" property="questionId" />
+		<result column="teacher_answer" jdbcType="VARCHAR" property="teacherAnswer" />
+		<result column="detail_id" jdbcType="INTEGER" property="detailId" />
+		<result column="dtime" jdbcType="TIMESTAMP" property="dtime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		hist_id, question_id, teacher_answer, detail_id, dtime
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_teacher_detail_comment
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.TeacherDetailComment"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_teacher_detail_comment
+		<where>
+			<if test="questionId != null">
+				and	question_id = #{questionId,jdbcType=INTEGER}
+			</if>
+			<if test="teacherAnswer != null">
+				and teacher_answer = #{teacherAnswer,jdbcType=VARCHAR}
+			</if>
+			<if test="detailId != null">
+				and detail_id = #{detailId,jdbcType=INTEGER}
+			</if>
+			<if test="dtime != null">
+				and dtime = #{dtime,jdbcType=TIMESTAMP}
+			</if>
+		</where>	
+		order by dtime desc
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from hist_teacher_detail_comment
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.TeacherDetailComment">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_teacher_detail_comment')
+		</selectKey>
+		insert into hist_teacher_detail_comment (hist_id, question_id,
+		teacher_answer,
+		detail_id, dtime)
+		values (#{histId,jdbcType=INTEGER}, #{questionId,jdbcType=INTEGER},
+		#{teacherAnswer,jdbcType=VARCHAR},
+		#{detailId,jdbcType=INTEGER}, #{dtime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.TeacherDetailComment">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_teacher_detail_comment')
+		</selectKey>
+		insert into hist_teacher_detail_comment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				hist_id,
+			</if>
+			<if test="questionId != null">
+				question_id,
+			</if>
+			<if test="teacherAnswer != null">
+				teacher_answer,
+			</if>
+			<if test="detailId != null">
+				detail_id,
+			</if>
+			<if test="dtime != null">
+				dtime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				#{histId,jdbcType=INTEGER},
+			</if>
+			<if test="questionId != null">
+				#{questionId,jdbcType=INTEGER},
+			</if>
+			<if test="teacherAnswer != null">
+				#{teacherAnswer,jdbcType=VARCHAR},
+			</if>
+			<if test="detailId != null">
+				#{detailId,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				#{dtime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.TeacherDetailComment">
+		update hist_teacher_detail_comment
+		<set>
+			<if test="questionId != null">
+				question_id = #{questionId,jdbcType=INTEGER},
+			</if>
+			<if test="teacherAnswer != null">
+				teacher_answer = #{teacherAnswer,jdbcType=VARCHAR},
+			</if>
+			<if test="detailId != null">
+				detail_id = #{detailId,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				dtime = #{dtime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.TeacherDetailComment">
+		update hist_teacher_detail_comment
+		set question_id = #{questionId,jdbcType=INTEGER},
+		teacher_answer = #{teacherAnswer,jdbcType=VARCHAR},
+		detail_id = #{detailId,jdbcType=INTEGER},
+		dtime = #{dtime,jdbcType=TIMESTAMP}
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.LessonMapper">
+  <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.Lesson">
+    <id column="lesson_id" jdbcType="INTEGER" property="lessonId" />
+    <result column="lesson_type" jdbcType="INTEGER" property="lessonType" />
+    <result column="lesson_name" jdbcType="VARCHAR" property="lessonName" />
+    <result column="lesson_level" jdbcType="INTEGER" property="lessonLevel" />
+    <result column="lesson_title" jdbcType="VARCHAR" property="lessonTitle" />
+    <result column="lesson_url" jdbcType="VARCHAR" property="lessonUrl" />
+    <result column="conf_time" jdbcType="TIMESTAMP" property="confTime" />
+    <result column="lesson_rank" jdbcType="INTEGER" property="lessonRank" />
+    <result column="over_cnt" jdbcType="INTEGER" property="overCnt" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="lesson_duration" jdbcType="INTEGER" property="lessonDuration" />
+    <result column="sub_level" jdbcType="INTEGER" property="subLevel" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="original_lesson_url" jdbcType="VARCHAR" property="originalLessonUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    lesson_id, lesson_type, lesson_name, lesson_level, lesson_title, lesson_url, conf_time, 
+    lesson_rank, over_cnt, content, lesson_duration, sub_level, status,original_lesson_url
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_lesson
+    where lesson_id = #{lessonId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findPager" parameterType="com.melot.talkee.driver.domain.Pager" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from conf_lesson
+    <where>
+      <if test="params!=null">
+        <if test="params.lessonLevel != null">
+          lesson_level = #{params.lessonLevel,jdbcType=INTEGER} and lesson_type = 1 ORDER BY sub_level
+        </if>
+      </if>
+    </where>
+  </select>
+
+   <select id="selectByLevel" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_lesson
+    <where>
+    	<if test="lessonLevel != null"> and lesson_level = #{lessonLevel,jdbcType=INTEGER}</if>
+    	<if test="subLevel != null"> and sub_level = #{subLevel,jdbcType=INTEGER}</if>
+    	<if test="lessonType != null"> and lesson_type = #{lessonType,jdbcType=INTEGER}</if>
+    	<if test="status != null"> and status = #{status,jdbcType=INTEGER}</if>
+    </where>
+   	limit 1
+  </select>
+  
+  <select id="selectOverplusCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+   	select count(*) from conf_lesson
+    <where>
+    	<if test="lessonLevel != null"> and lesson_level = #{lessonLevel,jdbcType=INTEGER}</if>
+    	<if test="subLevel != null"> and sub_level > #{subLevel,jdbcType=INTEGER}</if>
+    	<if test="lessonType != null"> and lesson_type = #{lessonType,jdbcType=INTEGER}</if>
+    	<if test="status != null"> and status = #{status,jdbcType=INTEGER}</if>
+    </where>
+  </select>
+  
+   <select id="selectSelective" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_lesson
+    <where>
+    	<if test="lessonLevel != null"> and lesson_level = #{lessonLevel,jdbcType=INTEGER}</if>
+    	<if test="subLevel != null"> and sub_level = #{subLevel,jdbcType=INTEGER}</if>
+    	<if test="lessonType != null"> and lesson_type = #{lessonType,jdbcType=INTEGER}</if>
+    	<if test="lessonId != null"> and  lesson_id = #{lessonId,jdbcType=INTEGER}</if>
+      	<if test="lessonName != null"> and lesson_name = #{lessonName,jdbcType=VARCHAR}</if>
+      	<if test="lessonTitle != null"> and lesson_title = #{lessonTitle,jdbcType=VARCHAR}</if>
+      	<if test="lessonUrl != null">  and lesson_url = #{lessonUrl,jdbcType=VARCHAR}</if>
+      	<if test="confTime != null"> and conf_time = #{confTime,jdbcType=TIMESTAMP}</if>
+      	<if test="lessonRank != null"> and lesson_rank = #{lessonRank,jdbcType=INTEGER}</if>
+      	<if test="overCnt != null"> and over_cnt = #{overCnt,jdbcType=INTEGER}</if>
+      	<if test="content != null"> and content = #{content,jdbcType=VARCHAR}</if>
+      	<if test="lessonDuration != null"> and lesson_duration = #{lessonDuration,jdbcType=INTEGER}</if>
+      	<if test="status != null"> and status = #{status,jdbcType=INTEGER}</if>
+    </where>
+    order by sub_level asc
+  </select>
+  
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conf_lesson
+    where lesson_id = #{lessonId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.melot.talkee.driver.domain.Lesson">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="lessonId">
+			select nextval('seq_conf_lesson')
+	</selectKey>
+    insert into conf_lesson (lesson_id, lesson_type, lesson_name, 
+      lesson_level, lesson_title, lesson_url, 
+      conf_time, lesson_rank, over_cnt, 
+      content, lesson_duration, sub_level, 
+      status)
+    values (#{lessonId,jdbcType=INTEGER}, #{lessonType,jdbcType=INTEGER}, #{lessonName,jdbcType=VARCHAR}, 
+      #{lessonLevel,jdbcType=INTEGER}, #{lessonTitle,jdbcType=VARCHAR}, #{lessonUrl,jdbcType=VARCHAR}, 
+      #{confTime,jdbcType=TIMESTAMP}, #{lessonRank,jdbcType=INTEGER}, #{overCnt,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{lessonDuration,jdbcType=INTEGER}, #{subLevel,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.Lesson">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="lessonId">
+			select nextval('seq_conf_lesson')
+	</selectKey>
+    insert into conf_lesson
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lessonId != null">
+        lesson_id,
+      </if>
+      <if test="lessonType != null">
+        lesson_type,
+      </if>
+      <if test="lessonName != null">
+        lesson_name,
+      </if>
+      <if test="lessonLevel != null">
+        lesson_level,
+      </if>
+      <if test="lessonTitle != null">
+        lesson_title,
+      </if>
+      <if test="lessonUrl != null">
+        lesson_url,
+      </if>
+      <if test="confTime != null">
+        conf_time,
+      </if>
+      <if test="lessonRank != null">
+        lesson_rank,
+      </if>
+      <if test="overCnt != null">
+        over_cnt,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="lessonDuration != null">
+        lesson_duration,
+      </if>
+      <if test="subLevel != null">
+        sub_level,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lessonId != null">
+        #{lessonId,jdbcType=INTEGER},
+      </if>
+      <if test="lessonType != null">
+        #{lessonType,jdbcType=INTEGER},
+      </if>
+      <if test="lessonName != null">
+        #{lessonName,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonLevel != null">
+        #{lessonLevel,jdbcType=INTEGER},
+      </if>
+      <if test="lessonTitle != null">
+        #{lessonTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonUrl != null">
+        #{lessonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="confTime != null">
+        #{confTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lessonRank != null">
+        #{lessonRank,jdbcType=INTEGER},
+      </if>
+      <if test="overCnt != null">
+        #{overCnt,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonDuration != null">
+        #{lessonDuration,jdbcType=INTEGER},
+      </if>
+      <if test="subLevel != null">
+        #{subLevel,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.Lesson">
+    update conf_lesson
+    <set>
+      <if test="lessonType != null">
+        lesson_type = #{lessonType,jdbcType=INTEGER},
+      </if>
+      <if test="lessonName != null">
+        lesson_name = #{lessonName,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonLevel != null">
+        lesson_level = #{lessonLevel,jdbcType=INTEGER},
+      </if>
+      <if test="lessonTitle != null">
+        lesson_title = #{lessonTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonUrl != null">
+        lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="confTime != null">
+        conf_time = #{confTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lessonRank != null">
+        lesson_rank = #{lessonRank,jdbcType=INTEGER},
+      </if>
+      <if test="overCnt != null">
+        over_cnt = #{overCnt,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonDuration != null">
+        lesson_duration = #{lessonDuration,jdbcType=INTEGER},
+      </if>
+      <if test="subLevel != null">
+        sub_level = #{subLevel,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where lesson_id = #{lessonId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.Lesson">
+    update conf_lesson
+    set lesson_type = #{lessonType,jdbcType=INTEGER},
+      lesson_name = #{lessonName,jdbcType=VARCHAR},
+      lesson_level = #{lessonLevel,jdbcType=INTEGER},
+      lesson_title = #{lessonTitle,jdbcType=VARCHAR},
+      lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+      conf_time = #{confTime,jdbcType=TIMESTAMP},
+      lesson_rank = #{lessonRank,jdbcType=INTEGER},
+      over_cnt = #{overCnt,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      lesson_duration = #{lessonDuration,jdbcType=INTEGER},
+      sub_level = #{subLevel,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where lesson_id = #{lessonId,jdbcType=INTEGER}
+  </update>
+</mapper>

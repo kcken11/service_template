@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.LessonLevelMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.LessonLevel">
+		<id column="level_id" jdbcType="INTEGER" property="levelId" />
+		<result column="level_name" jdbcType="VARCHAR" property="levelName" />
+		<result column="parent_level" jdbcType="INTEGER" property="parentLevel" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		level_id, level_name, parent_level
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_lesson_level
+		where level_id = #{levelId,jdbcType=INTEGER} and parent_level = #{parentLevel,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByParentLevel" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_lesson_level
+		where parent_level = #{parentLevel,jdbcType=INTEGER} order by level_id
+	</select>
+
+	<select id="getParentLevel" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_lesson_level where parent_level = 0 order by level_id
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.util.Map">
+		delete from conf_lesson_level
+		where level_id = #{levelId,jdbcType=INTEGER} and parent_level = #{parentLevel,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.LessonLevel">
+		insert into conf_lesson_level (level_id, level_name, parent_level
+		)
+		values (#{levelId,jdbcType=INTEGER}, #{levelName,jdbcType=VARCHAR},
+		#{parentLevel,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.LessonLevel">
+		insert into conf_lesson_level
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="levelId != null">
+				level_id,
+			</if>
+			<if test="levelName != null">
+				level_name,
+			</if>
+			<if test="parentLevel != null">
+				parent_level,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="levelId != null">
+				#{levelId,jdbcType=INTEGER},
+			</if>
+			<if test="levelName != null">
+				#{levelName,jdbcType=VARCHAR},
+			</if>
+			<if test="parentLevel != null">
+				#{parentLevel,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.LessonLevel">
+		update conf_lesson_level
+		<set>
+			<if test="levelName != null">
+				level_name = #{levelName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where level_id = #{levelId,jdbcType=INTEGER} and parent_level = #{parentLevel,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.LessonLevel">
+		update conf_lesson_level
+		set level_name = #{levelName,jdbcType=VARCHAR},
+		where level_id = #{levelId,jdbcType=INTEGER} and parent_level = #{parentLevel,jdbcType=INTEGER}
+	</update>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:kkrpc="http://www.kktv1.com/schema/kkrpc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.kktv1.com/schema/kkrpc http://www.kktv1.com/schema/kkrpc/kkrpc.xsd">
+		
+	<!-- 配置应用名称、应用版本、负责人等服务治理信息 -->
+	
+	<kkrpc:application id="myapp" appname="clientDemo" author="wqj" appversion="1.0.0"></kkrpc:application>
+		
+	<kkrpc:registry id="myregistry" address="10.0.0.25:2181" connecttimeout="10000" sessiontimeout="30000"></kkrpc:registry>
+	
+	<kkrpc:consumer timeout="80000" retries="3" loadbalance="roundrobin" filter="monitor" cluster="failover" heartbeat="60000" 
+	heartbeattimeout="180000" version="1.0.0" connections="1" application="myapp" registry="myregistry" group="*"
+	connecttimeout="3000"></kkrpc:consumer>
+	
+	<kkrpc:reference id="talkUserService" interface="com.melot.talkee.driver.service.TalkUserService" version="1.0.2"></kkrpc:reference>
+
+	<kkrpc:reference id="talkLessonService" interface="com.melot.talkee.driver.service.TalkLessonService" version="1.0.0"></kkrpc:reference>
+
+	<kkrpc:reference id="talkCommonService" interface="com.melot.talkee.driver.service.TalkCommonService" version="1.0.0"></kkrpc:reference>
+
+	<kkrpc:reference id="talkPublishService" interface="com.melot.talkee.driver.service.TalkPublishService" version="1.0.2"></kkrpc:reference>
+
+	<kkrpc:reference id="talkOrderService" interface="com.melot.talkee.driver.service.TalkOrderService" version="1.0.0"></kkrpc:reference>
+	
+	<kkrpc:reference id="talkSecurityService" interface="com.melot.talkee.driver.service.TalkSecurityService" version="1.0.2"></kkrpc:reference>
+
+	<kkrpc:reference id="ipRepositoryService" interface="com.melot.module.iprepository.driver.service.IpRepositoryService" version="1.0.0"></kkrpc:reference>
+
+	<kkrpc:reference id="resourceService" interface="com.melot.resource.service.ResourceService" version="1.0.0"></kkrpc:reference>
+	
+
+</beans>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:kkrpc="http://www.kktv1.com/schema/kkrpc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.kktv1.com/schema/kkrpc http://www.kktv1.com/schema/kkrpc/kkrpc.xsd">
+
+	<!-- 配置应用名称、应用版本、负责人等服务治理信息 -->
+	<kkrpc:application id="myapp" appname="${app.key}" author="${app.author}" appversion="${app.version}"></kkrpc:application>
+	
+	<!-- 配置服务注册中心信息 -->
+	<kkrpc:registry id="myregistry" address="${registry.zk.address}" connecttimeout="${registry.zk.connecttimeout}" 
+	sessiontimeout="${registry.zk.sessiontimeout}"></kkrpc:registry>
+	
+	<!-- 配置服务公共信息 -->
+	<kkrpc:provider timeout="${provider.timeout}" retries="${provider.reties}" heartbeat="${provider.heartbeat}"
+	heartbeattimeout="${provider.heartbeattimeout}" version="${provider.version}" application="myapp" registry="myregistry" 
+	host="${provider.host}" port="${provider.port}" workerthreads="${provider.workerthreads}" iothreads="${provider.iothreads}" 
+	queuesize="${provider.queuesize}"></kkrpc:provider>
+	
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkUserService" target="talkUserService" version="1.0.0"></kkrpc:service>
+	
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkLessonService" target="talkLessonService" version="1.0.0"></kkrpc:service>
+	
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkPublishService" target="talkPublishService" version="1.0.0"></kkrpc:service>
+		
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkOrderService" target="talkOrderService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkSecurityService" target="talkSecurityService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkClassService" target="talkClassService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkEmailService" target="talkEmailService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkTradeOrderService" target="talkTradeOrderService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:service interface="com.melot.talkee.driver.service.TalkCommonService" target="talkCommonService" version="1.0.0"></kkrpc:service>
+
+	<kkrpc:reference id="ipRepositoryService" interface="com.melot.module.iprepository.driver.service.IpRepositoryService" version="1.0.0"></kkrpc:reference>
+    <!--crm 模块-->
+	<kkrpc:reference id="tlkAdminService" interface="com.kktalkee.crm.module.service.TlkAdminService" version="1.0.1"></kkrpc:reference>
+
+</beans>

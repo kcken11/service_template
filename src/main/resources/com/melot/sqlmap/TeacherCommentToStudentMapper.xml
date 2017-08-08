@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.TeacherCommentToStudentMapper">
+    <resultMap id="BaseResultMap"
+               type="com.melot.talkee.driver.domain.TeacherCommentToStudent">
+        <id column="hist_id" jdbcType="INTEGER" property="histId" />
+        <result column="student_id" jdbcType="INTEGER" property="studentId" />
+        <result column="period_id" jdbcType="INTEGER" property="periodId" />
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+        <result column="pronunciation" jdbcType="INTEGER" property="pronunciation" />
+        <result column="participation" jdbcType="INTEGER" property="participation" />
+        <result column="comprehension" jdbcType="INTEGER" property="comprehension" />
+        <result column="fluency" jdbcType="INTEGER" property="fluency" />
+        <result column="creativity" jdbcType="INTEGER" property="creativity" />
+
+        <result column="summary" jdbcType="VARCHAR" property="summary" />
+        <result column="suggestion" jdbcType="VARCHAR" property="suggestion" />
+        <result column="other" jdbcType="VARCHAR" property="other" />
+
+        <result column="dTime" jdbcType="TIMESTAMP" property="dTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        hist_id, student_id, period_id, teacher_id, pronunciation, participation, comprehension,
+        fluency, creativity, summary, suggestion, other, dTime
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from hist_teacher_comment_student
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.TeacherCommentToStudent"
+            resultMap="BaseResultMap">
+        select hist_id, student_id, period_id, teacher_id, pronunciation, participation, comprehension,
+        fluency, creativity, summary, suggestion, other, dTime 
+        from
+        hist_teacher_comment_student
+        where teacher_id = #{teacherId,jdbcType=INTEGER} and
+        period_id = #{periodId,jdbcType=INTEGER} and student_id = #{studentId,jdbcType=INTEGER}
+        order by dTime desc
+    </select>
+
+    <insert id="insert" parameterType="com.melot.talkee.driver.domain.TeacherCommentToStudent">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_hist_teacher_comment_student')
+        </selectKey>
+        insert into hist_teacher_comment_student (hist_id, student_id, period_id, teacher_id, pronunciation,
+        participation, comprehension, fluency, creativity, summary, suggestion, other, dTime)
+        values (histId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{periodId,jdbcType=INTEGER},
+        #{teacherId,jdbcType=INTEGER}, #{pronunciation,jdbcType=INTEGER},#{participation,jdbcType=INTEGER}, #{comprehension,jdbcType=INTEGER},
+        #{fluency,jdbcType=INTEGER}, #{creativity,jdbcType=INTEGER}, #{summary,jdbcType=VARCHAR}, #{suggestion,jdbcType=VARCHAR},
+        #{other,jdbcType=VARCHAR}, #{dTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.TeacherCommentToStudent">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_hist_teacher_comment_student')
+        </selectKey>
+        insert into hist_teacher_comment_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                hist_id,
+            </if>
+            <if test="studentId != null">
+                student_id,
+            </if>
+            <if test="periodId != null">
+                period_id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+
+            <if test="pronunciation != null">
+                pronunciation,
+            </if>
+            <if test="participation != null">
+                participation,
+            </if>
+            <if test="comprehension != null">
+                comprehension,
+            </if>
+            <if test="fluency != null">
+                fluency,
+            </if>
+            <if test="creativity != null">
+                creativity,
+            </if>
+
+            <if test="summary != null">
+                summary,
+            </if>
+            <if test="suggestion != null">
+                suggestion,
+            </if>
+            <if test="other != null">
+                other,
+            </if>
+
+            <if test="dTime != null">
+                dTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                #{histId,jdbcType=INTEGER},
+            </if>
+            <if test="studentId != null">
+                #{studentId,jdbcType=INTEGER},
+            </if>
+            <if test="periodId != null">
+                #{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=INTEGER},
+            </if>
+
+            <if test="pronunciation != null">
+                #{pronunciation,jdbcType=INTEGER},
+            </if>
+            <if test="participation != null">
+                #{participation,jdbcType=INTEGER},
+            </if>
+
+            <if test="comprehension != null">
+                #{comprehension,jdbcType=INTEGER},
+            </if>
+            <if test="fluency != null">
+                #{fluency,jdbcType=INTEGER},
+            </if>
+            <if test="creativity != null">
+                #{creativity,jdbcType=INTEGER},
+            </if>
+            <if test="summary != null">
+                #{summary,jdbcType=VARCHAR},
+            </if>
+            <if test="suggestion != null">
+                #{suggestion,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                #{other,jdbcType=VARCHAR},
+            </if>
+            <if test="dTime != null">
+                #{dTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.TeacherCommentToStudent">
+        update hist_teacher_comment_student
+        <set>
+            <if test="histId != null">
+                hist_id=#{histId,jdbcType=INTEGER},
+            </if>
+            <if test="studentId != null">
+                student_id=#{studentId,jdbcType=INTEGER},
+            </if>
+            <if test="periodId != null">
+                period_id=#{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                teacher_id=#{teacherId,jdbcType=INTEGER},
+            </if>
+
+            <if test="pronunciation != null">
+                pronunciation=#{pronunciation,jdbcType=INTEGER},
+            </if>
+            <if test="participation != null">
+                participation=#{participation,jdbcType=INTEGER},
+            </if>
+
+            <if test="comprehension != null">
+                comprehension=#{comprehension,jdbcType=INTEGER},
+            </if>
+            <if test="fluency != null">
+                fluency=#{fluency,jdbcType=INTEGER},
+            </if>
+            <if test="creativity != null">
+                creativity=#{creativity,jdbcType=INTEGER},
+            </if>
+            <if test="summary != null">
+                summary=#{summary,jdbcType=VARCHAR},
+            </if>
+            <if test="suggestion != null">
+                suggestion=#{suggestion,jdbcType=VARCHAR},
+            </if>
+            <if test="other != null">
+                other=#{other,jdbcType=VARCHAR},
+            </if>
+            <if test="dTime != null">
+                dTime=#{dTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.TeacherCommentToStudent">
+        update hist_teacher_comment_student
+            hist_id=#{histId,jdbcType=INTEGER},
+            student_id=#{studentId,jdbcType=INTEGER},
+            period_id=#{periodId,jdbcType=INTEGER},
+            teacher_id=#{teacherId,jdbcType=INTEGER},
+            pronunciation=#{pronunciation,jdbcType=INTEGER},
+            participation=#{participation,jdbcType=INTEGER},
+            comprehension=#{comprehension,jdbcType=INTEGER},
+            fluency=#{fluency,jdbcType=INTEGER},
+            creativity=#{creativity,jdbcType=INTEGER},
+            summary=#{summary,jdbcType=VARCHAR},
+            suggestion=#{suggestion,jdbcType=VARCHAR},
+            other=#{other,jdbcType=VARCHAR},
+            dTime=#{dTime,jdbcType=TIMESTAMP},
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+</mapper>

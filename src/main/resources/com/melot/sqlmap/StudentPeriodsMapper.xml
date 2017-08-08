@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.StudentPeriodsMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.StudentPeriods">
+		<id column="res_id" jdbcType="INTEGER" property="resId" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="last_order_id" jdbcType="VARCHAR" property="lastOrderId" />
+		<result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="cur_periods" jdbcType="INTEGER" property="curPeriods" />
+		<result column="all_periods" jdbcType="INTEGER" property="allPeriods" />
+		<result column="over_periods" jdbcType="INTEGER" property="overPeriods" />
+		<result column="dtime" jdbcType="TIMESTAMP" property="dtime" />
+		<result column="periods_type" jdbcType="INTEGER" property="periodsType" />
+		<result column="vaild_previw_periods" jdbcType="INTEGER" property="vaildPreviwPeriods"/>
+		<result column="accumulative_total" jdbcType="INTEGER" property="accumulativeTotal"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		res_id, user_id, last_order_id, begin_time, end_time,
+		cur_periods,
+		all_periods, over_periods,
+		dtime,periods_type,vaild_previw_periods,accumulative_total
+	</sql>
+	<select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.StudentPeriods"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from res_student_periods
+		<where>
+			<if test="resId != null">
+				and res_id = #{resId,jdbcType=INTEGER}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId,jdbcType=INTEGER}
+			</if>
+			<if test="lastOrderId != null">
+				and last_order_id = #{lastOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="beginTime != null">
+				and begin_time = #{beginTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="endTime != null">
+				and end_time = #{endTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="curPeriods != null">
+				and cur_periods = #{curPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="allPeriods != null">
+				and all_periods = #{allPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="overPeriods != null">
+				and over_periods = #{overPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="dtime != null">
+				and dtime = #{dtime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="periodsType != null">
+				and periods_type = #{periodsType,jdbcType=INTEGER}
+			</if>
+			<if test="accumulativeTotal != null">
+				and accumulative_total = #{accumulativeTotal,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectByUserIdAndPeriodType" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from res_student_periods where user_id = #{userId,jdbcType=INTEGER} 
+		and periods_type = #{periodsType,jdbcType=INTEGER}
+		order by dtime desc limit 1
+	</select>
+
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from res_student_periods
+		where res_id = #{resId,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		res_student_periods
+		where res_id = #{resId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.StudentPeriods">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="resId">
+				select nextval('seq_student_periods')
+		</selectKey>
+		insert into
+		res_student_periods (res_id, user_id, last_order_id,
+		begin_time,
+		end_time, cur_periods,
+		all_periods, over_periods, dtime,periods_type,vaild_previw_periods,accumulative_total
+		)
+		values
+		(#{resId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{lastOrderId,jdbcType=VARCHAR},
+		#{beginTime,jdbcType=TIMESTAMP},
+		#{endTime,jdbcType=TIMESTAMP}, #{curPeriods,jdbcType=INTEGER},
+		#{allPeriods,jdbcType=INTEGER}, #{overPeriods,jdbcType=INTEGER},
+		#{dtime,jdbcType=TIMESTAMP},#{periodsType,jdbcType=INTEGER},
+		#{vaildPreviwPeriods,jdbcType=INTEGER},#{accumulativeTotal,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.StudentPeriods">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="resId">
+				select nextval('seq_student_periods')
+		</selectKey>
+		insert into res_student_periods
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="resId != null">
+				res_id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="lastOrderId != null">
+				last_order_id,
+			</if>
+			<if test="beginTime != null">
+				begin_time,
+			</if>
+			<if test="endTime != null">
+				end_time,
+			</if>
+			<if test="curPeriods != null">
+				cur_periods,
+			</if>
+			<if test="allPeriods != null">
+				all_periods,
+			</if>
+			<if test="overPeriods != null">
+				over_periods,
+			</if>
+			<if test="dtime != null">
+				dtime,
+			</if>
+			<if test="periodsType != null">
+				periods_type,
+			</if>
+			<if test="vaildPreviwPeriods != null">
+				vaild_previw_eriods,
+			</if>
+			<if test="accumulativeTotal != null">
+				accumulative_total,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="resId != null">
+				#{resId,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="lastOrderId != null">
+				#{lastOrderId,jdbcType=VARCHAR},
+			</if>
+			<if test="beginTime != null">
+				#{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				#{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="curPeriods != null">
+				#{curPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="allPeriods != null">
+				#{allPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="overPeriods != null">
+				#{overPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				#{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodsType != null">
+				#{periodsType,jdbcType=INTEGER},
+			</if>
+			<if test="vaildPreviwPeriods != null">
+				#{vaildPreviwPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="accumulativeTotal != null">
+				#{accumulativeTotal,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.StudentPeriods">
+		update res_student_periods
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="lastOrderId != null">
+				last_order_id = #{lastOrderId,jdbcType=VARCHAR},
+			</if>
+			<if test="beginTime != null">
+				begin_time = #{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="curPeriods != null">
+				cur_periods = #{curPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="allPeriods != null">
+				all_periods = #{allPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="overPeriods != null">
+				over_periods = #{overPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				dtime = #{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodsType != null">
+				periods_type = #{periodsType,jdbcType=INTEGER},
+			</if>
+			<if test="vaildPreviwPeriods != null">
+				vaild_previw_periods = #{vaildPreviwPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="accumulativeTotal != null">
+				accumulative_total = #{accumulativeTotal,jdbcType=INTEGER},
+			</if>
+		</set>
+		where res_id = #{resId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.StudentPeriods">
+		update
+		res_student_periods
+		set user_id = #{userId,jdbcType=INTEGER},
+		last_order_id = #{lastOrderId,jdbcType=VARCHAR},
+		begin_time =
+		#{beginTime,jdbcType=TIMESTAMP},
+		end_time =
+		#{endTime,jdbcType=TIMESTAMP},
+		cur_periods =
+		#{curPeriods,jdbcType=INTEGER},
+		all_periods =
+		#{allPeriods,jdbcType=INTEGER},
+		over_periods =
+		#{overPeriods,jdbcType=INTEGER},
+		dtime = #{dtime,jdbcType=TIMESTAMP},
+		periods_type = #{periodsType,jdbcType=INTEGER},
+		vaild_previw_periods = #{vaildPreviwPeriods,jdbcType=INTEGER},
+		accumulative_total = #{accumulativeTotal,jdbcType=INTEGER}
+		where res_id = #{resId,jdbcType=INTEGER}
+	</update>
+
+
+	<select id="selectCountByUserIdAndLessonType" parameterType="java.util.Map"
+			resultType="java.lang.Integer">
+		SELECT p.over_periods from res_student_periods p
+		where p.user_id = #{userId,jdbcType=INTEGER}
+		and	p.periods_type = #{periodType,jdbcType=INTEGER}
+	</select>
+
+</mapper>

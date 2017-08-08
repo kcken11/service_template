@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.TurnStudentLessonMapper">
+  <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.TurnStudentLesson">
+    <id column="hist_id" jdbcType="INTEGER" property="histId" />
+    <result column="student_id" jdbcType="INTEGER" property="studentId" />
+    <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+    <result column="period_id" jdbcType="INTEGER" property="periodId" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="lesson_url" jdbcType="VARCHAR" property="lessonUrl" />
+    <result column="lesson_id" jdbcType="INTEGER" property="lessonId" />
+    <result column="order_user" jdbcType="INTEGER" property="orderUser" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+    <result column="trun_video_state" jdbcType="INTEGER" property="trunVideoState" />
+    <result column="is_student_comment" jdbcType="INTEGER" property="isStudentComment"/>
+    <result column="is_teacher_comment" jdbcType="INTEGER" property="isTeacherComment"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    hist_id, student_id, teacher_id, period_id, begin_time, end_time, lesson_url, lesson_id, 
+    order_user, order_time, trun_video_state,is_student_comment,is_teacher_comment
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hist_turn_student_lesson
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByUserIdAndStateList" parameterType="java.util.Map" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from hist_turn_student_lesson
+	<where>
+       <if test="studentId != null">
+     	  and student_id =  #{studentId,jdbcType=INTEGER}
+      </if>
+      <if test="teacherId != null">
+    	  and teacher_id =  #{teacherId,jdbcType=INTEGER}
+      </if>
+      <if test="stateList != null">and trun_video_state in 
+       	  	<foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+				#{stateList[${index}]}
+			</foreach>
+      </if>
+	</where>
+	order by begin_time
+  </select>
+  
+  <select id="selectByPeriodId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from hist_turn_student_lesson
+	where period_id = #{periodId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hist_turn_student_lesson
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.melot.talkee.driver.domain.TurnStudentLesson">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_student_lesson')
+	</selectKey>
+    insert into hist_turn_student_lesson (hist_id, student_id, teacher_id, 
+      period_id, begin_time, end_time, 
+      lesson_url, lesson_id, order_user, 
+      order_time, trun_video_state)
+    values (#{histId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, 
+      #{periodId,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{lessonUrl,jdbcType=VARCHAR}, #{lessonId,jdbcType=INTEGER}, #{orderUser,jdbcType=INTEGER}, 
+      #{orderTime,jdbcType=TIMESTAMP}, #{trunVideoState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.TurnStudentLesson">
+  <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_student_lesson')
+	</selectKey>
+    insert into hist_turn_student_lesson
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="histId != null">
+        hist_id,
+      </if>
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+      <if test="periodId != null">
+        period_id,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="lessonUrl != null">
+        lesson_url,
+      </if>
+      <if test="lessonId != null">
+        lesson_id,
+      </if>
+      <if test="orderUser != null">
+        order_user,
+      </if>
+      <if test="orderTime != null">
+        order_time,
+      </if>
+      <if test="trunVideoState != null">
+        trun_video_state,
+      </if>
+      <if test="isStudentComment != null">
+        is_student_comment,
+      </if>
+      <if test="isTeacherComment != null">
+        is_teacher_comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="histId != null">
+        #{histId,jdbcType=INTEGER},
+      </if>
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="periodId != null">
+        #{periodId,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lessonUrl != null">
+        #{lessonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonId != null">
+        #{lessonId,jdbcType=INTEGER},
+      </if>
+      <if test="orderUser != null">
+        #{orderUser,jdbcType=INTEGER},
+      </if>
+      <if test="orderTime != null">
+        #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trunVideoState != null">
+        #{trunVideoState,jdbcType=INTEGER},
+      </if>
+      <if test="isStudentComment != null">
+        #{isStudentComment,jdbcType=INTEGER},
+      </if>
+      <if test="isTeacherComment != null">
+        #{isTeacherComment,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.TurnStudentLesson">
+    update hist_turn_student_lesson
+    <set>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="periodId != null">
+        period_id = #{periodId,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lessonUrl != null">
+        lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="lessonId != null">
+        lesson_id = #{lessonId,jdbcType=INTEGER},
+      </if>
+      <if test="orderUser != null">
+        order_user = #{orderUser,jdbcType=INTEGER},
+      </if>
+      <if test="orderTime != null">
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trunVideoState != null">
+        trun_video_state = #{trunVideoState,jdbcType=INTEGER},
+      </if>
+      <if test="isStudentComment != null">
+        is_student_comment = #{isStudentComment,jdbcType=INTEGER},
+      </if>
+      <if test="isTeacherComment != null">
+        is_teacher_comment = #{isTeacherComment,jdbcType=INTEGER},
+      </if>
+    </set>
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.TurnStudentLesson">
+    update hist_turn_student_lesson
+    set student_id = #{studentId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      period_id = #{periodId,jdbcType=INTEGER},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+      lesson_id = #{lessonId,jdbcType=INTEGER},
+      order_user = #{orderUser,jdbcType=INTEGER},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
+      trun_video_state = #{trunVideoState,jdbcType=INTEGER}
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </update>
+</mapper>

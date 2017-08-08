@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.BuyPeriodsMapper">
+  <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.BuyPeriods">
+    <id column="hist_id" jdbcType="INTEGER" property="histId" />
+    <result column="orderid" jdbcType="VARCHAR" property="orderid" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="periods" jdbcType="INTEGER" property="periods" />
+    <result column="public_lesson" jdbcType="INTEGER" property="publicLesson" />
+    <result column="extra_periods" jdbcType="INTEGER" property="extraPeriods" />
+    <result column="extra_public_lesson" jdbcType="INTEGER" property="extraPublicLesson" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="ipaddr" jdbcType="VARCHAR" property="ipaddr" />
+    <result column="payment_mode" jdbcType="INTEGER" property="paymentMode" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="package_id" jdbcType="INTEGER" property="packageId" />
+    <result column="buy_time" jdbcType="TIMESTAMP" property="buyTime" />
+    <result column="affirm_time" jdbcType="TIMESTAMP" property="affirmTime" />
+    <result column="callbak_orderid" jdbcType="INTEGER" property="callbakOrderid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    hist_id, orderid, user_id, periods, public_lesson, extra_periods, extra_public_lesson, 
+    status, ipaddr, payment_mode, amount, package_id, buy_time, affirm_time, callbak_orderid
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from hist_student_buy_periods
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByOrderId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from hist_student_buy_periods
+    where orderid = #{orderId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByParamByUserIdAndStatus" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from hist_student_buy_periods
+    <where>
+      <if test="userId!=null">
+        and user_id=#{userId,jdbcType=INTEGER}
+      </if>
+      <if test="status!=null">
+        and status=#{status,jdbcType=INTEGER}
+      </if>
+    </where>
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from hist_student_buy_periods
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.melot.talkee.driver.domain.BuyPeriods">
+    insert into hist_student_buy_periods (hist_id, orderid, user_id,
+      periods, public_lesson, extra_periods, 
+      extra_public_lesson, status, ipaddr, 
+      payment_mode, amount, package_id,
+      buy_time, affirm_time, callbak_orderid
+      )
+    values (#{histId,jdbcType=INTEGER}, #{orderid,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER},
+      #{periods,jdbcType=INTEGER}, #{publicLesson,jdbcType=INTEGER}, #{extraPeriods,jdbcType=INTEGER}, 
+      #{extraPublicLesson,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{ipaddr,jdbcType=VARCHAR}, 
+      #{paymentMode,jdbcType=INTEGER}, #{amount,jdbcType=INTEGER}, #{packageId,jdbcType=INTEGER}, 
+      #{buyTime,jdbcType=TIMESTAMP}, #{affirmTime,jdbcType=TIMESTAMP}, #{callbakOrderid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.BuyPeriods">
+    insert into hist_student_buy_periods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="histId != null">
+        hist_id,
+      </if>
+      <if test="orderid != null">
+        orderid,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="periods != null">
+        periods,
+      </if>
+      <if test="publicLesson != null">
+        public_lesson,
+      </if>
+      <if test="extraPeriods != null">
+        extra_periods,
+      </if>
+      <if test="extraPublicLesson != null">
+        extra_public_lesson,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="ipaddr != null">
+        ipaddr,
+      </if>
+      <if test="paymentMode != null">
+        payment_mode,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="packageId != null">
+        package_id,
+      </if>
+      <if test="buyTime != null">
+        buy_time,
+      </if>
+      <if test="affirmTime != null">
+        affirm_time,
+      </if>
+      <if test="callbakOrderid != null">
+        callbak_orderid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="histId != null">
+        #{histId,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null">
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="periods != null">
+        #{periods,jdbcType=INTEGER},
+      </if>
+      <if test="publicLesson != null">
+        #{publicLesson,jdbcType=INTEGER},
+      </if>
+      <if test="extraPeriods != null">
+        #{extraPeriods,jdbcType=INTEGER},
+      </if>
+      <if test="extraPublicLesson != null">
+        #{extraPublicLesson,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddr != null">
+        #{ipaddr,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentMode != null">
+        #{paymentMode,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="packageId != null">
+        #{packageId,jdbcType=INTEGER},
+      </if>
+      <if test="buyTime != null">
+        #{buyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="affirmTime != null">
+        #{affirmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbakOrderid != null">
+        #{callbakOrderid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.BuyPeriods">
+    update hist_student_buy_periods
+    <set>
+      <if test="orderid != null">
+        orderid = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="periods != null">
+        periods = #{periods,jdbcType=INTEGER},
+      </if>
+      <if test="publicLesson != null">
+        public_lesson = #{publicLesson,jdbcType=INTEGER},
+      </if>
+      <if test="extraPeriods != null">
+        extra_periods = #{extraPeriods,jdbcType=INTEGER},
+      </if>
+      <if test="extraPublicLesson != null">
+        extra_public_lesson = #{extraPublicLesson,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddr != null">
+        ipaddr = #{ipaddr,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentMode != null">
+        payment_mode = #{paymentMode,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="packageId != null">
+        package_id = #{packageId,jdbcType=INTEGER},
+      </if>
+      <if test="buyTime != null">
+        buy_time = #{buyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="affirmTime != null">
+        affirm_time = #{affirmTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbakOrderid != null">
+        callbak_orderid = #{callbakOrderid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.BuyPeriods">
+    update hist_student_buy_periods
+    set orderid = #{orderid,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      periods = #{periods,jdbcType=INTEGER},
+      public_lesson = #{publicLesson,jdbcType=INTEGER},
+      extra_periods = #{extraPeriods,jdbcType=INTEGER},
+      extra_public_lesson = #{extraPublicLesson,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      ipaddr = #{ipaddr,jdbcType=VARCHAR},
+      payment_mode = #{paymentMode,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=INTEGER},
+      package_id = #{packageId,jdbcType=INTEGER},
+      buy_time = #{buyTime,jdbcType=TIMESTAMP},
+      affirm_time = #{affirmTime,jdbcType=TIMESTAMP},
+      callbak_orderid = #{callbakOrderid,jdbcType=INTEGER}
+    where hist_id = #{histId,jdbcType=INTEGER}
+  </update>
+</mapper>

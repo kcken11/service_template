@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.SmsConfigMapper">
+  <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.SmsConfig">
+    <id column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="advice_type" jdbcType="INTEGER" property="adviceType" />
+    <result column="advice_user_type" jdbcType="INTEGER" property="adviceUserType" />
+    <result column="advice_template" jdbcType="VARCHAR" property="adviceTemplate" />
+    <result column="advice_status" jdbcType="INTEGER" property="adviceStatus" />
+    <result column="daily_count" jdbcType="INTEGER" property="dailyCount" />
+    <result column="active_time" jdbcType="INTEGER" property="activeTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    template_id, advice_type, advice_user_type, advice_template, advice_status, daily_count, 
+    active_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_sms
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectBySmsTypeAndUserType" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_sms
+    where advice_type = #{adviceType,jdbcType=INTEGER} and advice_user_type = #{adviceUserType,jdbcType=INTEGER} and advice_status = 1 limit 1
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conf_sms
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.melot.talkee.driver.domain.SmsConfig">
+    insert into conf_sms (template_id, advice_type, advice_user_type, 
+      advice_template, advice_status, daily_count, 
+      active_time)
+    values (#{templateId,jdbcType=INTEGER}, #{adviceType,jdbcType=INTEGER}, #{adviceUserType,jdbcType=INTEGER}, 
+      #{adviceTemplate,jdbcType=VARCHAR}, #{adviceStatus,jdbcType=INTEGER}, #{dailyCount,jdbcType=INTEGER}, 
+      #{activeTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.SmsConfig">
+    insert into conf_sms
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="adviceType != null">
+        advice_type,
+      </if>
+      <if test="adviceUserType != null">
+        advice_user_type,
+      </if>
+      <if test="adviceTemplate != null">
+        advice_template,
+      </if>
+      <if test="adviceStatus != null">
+        advice_status,
+      </if>
+      <if test="dailyCount != null">
+        daily_count,
+      </if>
+      <if test="activeTime != null">
+        active_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="adviceType != null">
+        #{adviceType,jdbcType=INTEGER},
+      </if>
+      <if test="adviceUserType != null">
+        #{adviceUserType,jdbcType=INTEGER},
+      </if>
+      <if test="adviceTemplate != null">
+        #{adviceTemplate,jdbcType=VARCHAR},
+      </if>
+      <if test="adviceStatus != null">
+        #{adviceStatus,jdbcType=INTEGER},
+      </if>
+      <if test="dailyCount != null">
+        #{dailyCount,jdbcType=INTEGER},
+      </if>
+      <if test="activeTime != null">
+        #{activeTime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.SmsConfig">
+    update conf_sms
+    <set>
+      <if test="adviceType != null">
+        advice_type = #{adviceType,jdbcType=INTEGER},
+      </if>
+      <if test="adviceUserType != null">
+        advice_user_type = #{adviceUserType,jdbcType=INTEGER},
+      </if>
+      <if test="adviceTemplate != null">
+        advice_template = #{adviceTemplate,jdbcType=VARCHAR},
+      </if>
+      <if test="adviceStatus != null">
+        advice_status = #{adviceStatus,jdbcType=INTEGER},
+      </if>
+      <if test="dailyCount != null">
+        daily_count = #{dailyCount,jdbcType=INTEGER},
+      </if>
+      <if test="activeTime != null">
+        active_time = #{activeTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.SmsConfig">
+    update conf_sms
+    set advice_type = #{adviceType,jdbcType=INTEGER},
+      advice_user_type = #{adviceUserType,jdbcType=INTEGER},
+      advice_template = #{adviceTemplate,jdbcType=VARCHAR},
+      advice_status = #{adviceStatus,jdbcType=INTEGER},
+      daily_count = #{dailyCount,jdbcType=INTEGER},
+      active_time = #{activeTime,jdbcType=INTEGER}
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </update>
+</mapper>

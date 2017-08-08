@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.StudentCheckinMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.StudentCheckin">
+		<id column="hist_id" jdbcType="INTEGER" property="histId" />
+		<result column="student_id" jdbcType="INTEGER" property="studentId" />
+		<result column="period_id" jdbcType="INTEGER" property="periodId" />
+		<result column="abnormal_state" jdbcType="INTEGER" property="abnormalState" />
+		<result column="abnormal_desc" jdbcType="VARCHAR" property="abnormalDesc" />
+		<result column="cons_periods" jdbcType="INTEGER" property="consPeriods" />
+		<result column="dtime" jdbcType="TIMESTAMP" property="dtime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		hist_id, student_id, period_id, abnormal_state, abnormal_desc, cons_periods,
+		dtime
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_student_checkin
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.StudentCheckin"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_student_checkin
+		<where>
+			<if test="histId != null">
+				and	hist_id = #{histId,jdbcType=INTEGER}
+			</if>
+			<if test="studentId != null">
+				and	student_id = #{studentId,jdbcType=INTEGER}
+			</if>
+			<if test="periodId != null">
+				and	period_id = #{periodId,jdbcType=INTEGER}
+			</if>
+			<if test="abnormalState != null">
+				and	abnormal_state = #{abnormalState,jdbcType=INTEGER}
+			</if>
+			<if test="abnormalDesc != null">
+				and	abnormal_desc = #{abnormalDesc,jdbcType=VARCHAR}
+			</if>
+			<if test="consPeriods != null">
+				and	cons_periods = #{consPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="dtime != null">
+				and	dtime = #{dtime,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectByPeriodAndStudentId" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_student_checkin
+		<where>
+			<if test="studentId != null">
+				and	student_id = #{studentId,jdbcType=INTEGER}
+			</if>
+			<if test="periodId != null">
+				and	period_id = #{periodId,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by dtime limit 1
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from hist_student_checkin
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.StudentCheckin">
+	  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_student_checkin')
+		</selectKey>
+		insert into hist_student_checkin (hist_id, student_id, period_id,
+		abnormal_state, abnormal_desc, cons_periods,
+		dtime)
+		values (#{histId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER},
+		#{periodId,jdbcType=INTEGER},
+		#{abnormalState,jdbcType=INTEGER}, #{abnormalDesc,jdbcType=VARCHAR}, #{consPeriods,jdbcType=INTEGER},
+		#{dtime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.StudentCheckin">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_student_checkin')
+		</selectKey>
+		insert into hist_student_checkin
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				hist_id,
+			</if>
+			<if test="studentId != null">
+				student_id,
+			</if>
+			<if test="periodId != null">
+				period_id,
+			</if>
+			<if test="abnormalState != null">
+				abnormal_state,
+			</if>
+			<if test="abnormalDesc != null">
+				abnormal_desc,
+			</if>
+			<if test="consPeriods != null">
+				cons_periods,
+			</if>
+			<if test="dtime != null">
+				dtime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				#{histId,jdbcType=INTEGER},
+			</if>
+			<if test="studentId != null">
+				#{studentId,jdbcType=INTEGER},
+			</if>
+			<if test="periodId != null">
+				#{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="abnormalState != null">
+				#{abnormalState,jdbcType=INTEGER},
+			</if>
+			<if test="abnormalDesc != null">
+				#{abnormalDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="consPeriods != null">
+				#{consPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				#{dtime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.StudentCheckin">
+		update hist_student_checkin
+		<set>
+			<if test="studentId != null">
+				student_id = #{studentId,jdbcType=INTEGER},
+			</if>
+			<if test="periodId != null">
+				period_id = #{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="abnormalState != null">
+				abnormal_state = #{abnormalState,jdbcType=INTEGER},
+			</if>
+			<if test="abnormalDesc != null">
+				abnormal_desc = #{abnormalDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="consPeriods != null">
+				cons_periods = #{consPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				dtime = #{dtime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.StudentCheckin">
+		update hist_student_checkin
+		set student_id = #{studentId,jdbcType=INTEGER},
+		period_id = #{periodId,jdbcType=INTEGER},
+		abnormal_state = #{abnormalState,jdbcType=INTEGER},
+		abnormal_desc = #{abnormalDesc,jdbcType=VARCHAR},
+		cons_periods = #{consPeriods,jdbcType=INTEGER},
+		dtime = #{dtime,jdbcType=TIMESTAMP}
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+</mapper>

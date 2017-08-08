@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.VersionInfoMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.VersionInfo">
+		<id column="version_id" jdbcType="INTEGER" property="versionId" />
+		<result column="version_code" jdbcType="INTEGER" property="versionCode" />
+		<result column="version_name" jdbcType="VARCHAR" property="versionName" />
+		<result column="version_desc" jdbcType="VARCHAR" property="versionDesc" />
+		<result column="version_url" jdbcType="VARCHAR" property="versionUrl" />
+		<result column="version_status" jdbcType="INTEGER" property="versionStatus" />
+		<result column="version_platform" jdbcType="INTEGER" property="versionPlatform" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="last_access_time" jdbcType="TIMESTAMP"
+			property="lastAccessTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		version_id, version_code, version_name, version_desc, version_url,
+		version_status,
+		version_platform, update_time, last_access_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_version_info
+		where version_id = #{versionId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectByCodeAndPlatform" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_version_info
+		where version_name = #{versionName,jdbcType=VARCHAR} and version_platform = #{versionPlatform,jdbcType=INTEGER} limit 1
+	</select>
+	
+	<select id="selectLatestVersion" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_version_info
+		where version_platform = #{versionPlatform,jdbcType=INTEGER} and version_status > 0 order by version_code limit 1
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from conf_version_info
+		where version_id = #{versionId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.VersionInfo">
+		insert into conf_version_info (version_id, version_code, version_name,
+		version_desc, version_url, version_status,
+		version_platform, update_time, last_access_time
+		)
+		values (#{versionId,jdbcType=INTEGER}, #{versionCode,jdbcType=INTEGER},
+		#{versionName,jdbcType=VARCHAR},
+		#{versionDesc,jdbcType=VARCHAR}, #{versionUrl,jdbcType=VARCHAR}, #{versionStatus,jdbcType=INTEGER},
+		#{versionPlatform,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
+		#{lastAccessTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.VersionInfo">
+		insert into conf_version_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="versionId != null">
+				version_id,
+			</if>
+			<if test="versionCode != null">
+				version_code,
+			</if>
+			<if test="versionName != null">
+				version_name,
+			</if>
+			<if test="versionDesc != null">
+				version_desc,
+			</if>
+			<if test="versionUrl != null">
+				version_url,
+			</if>
+			<if test="versionStatus != null">
+				version_status,
+			</if>
+			<if test="versionPlatform != null">
+				version_platform,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="lastAccessTime != null">
+				last_access_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="versionId != null">
+				#{versionId,jdbcType=INTEGER},
+			</if>
+			<if test="versionCode != null">
+				#{versionCode,jdbcType=INTEGER},
+			</if>
+			<if test="versionName != null">
+				#{versionName,jdbcType=VARCHAR},
+			</if>
+			<if test="versionDesc != null">
+				#{versionDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="versionUrl != null">
+				#{versionUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="versionStatus != null">
+				#{versionStatus,jdbcType=INTEGER},
+			</if>
+			<if test="versionPlatform != null">
+				#{versionPlatform,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastAccessTime != null">
+				#{lastAccessTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.VersionInfo">
+		update conf_version_info
+		<set>
+			<if test="versionCode != null">
+				version_code = #{versionCode,jdbcType=INTEGER},
+			</if>
+			<if test="versionName != null">
+				version_name = #{versionName,jdbcType=VARCHAR},
+			</if>
+			<if test="versionDesc != null">
+				version_desc = #{versionDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="versionUrl != null">
+				version_url = #{versionUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="versionStatus != null">
+				version_status = #{versionStatus,jdbcType=INTEGER},
+			</if>
+			<if test="versionPlatform != null">
+				version_platform = #{versionPlatform,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastAccessTime != null">
+				last_access_time = #{lastAccessTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where version_id = #{versionId,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateLastAccessTime" parameterType="java.util.Map">
+		update conf_version_info set last_access_time = now()
+		where version_name = #{versionName,jdbcType=VARCHAR} and version_platform = #{versionPlatform,jdbcType=INTEGER}
+	</update>
+	
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.VersionInfo">
+		update conf_version_info
+		set version_code = #{versionCode,jdbcType=INTEGER},
+		version_name = #{versionName,jdbcType=VARCHAR},
+		version_desc = #{versionDesc,jdbcType=VARCHAR},
+		version_url = #{versionUrl,jdbcType=VARCHAR},
+		version_status = #{versionStatus,jdbcType=INTEGER},
+		version_platform = #{versionPlatform,jdbcType=INTEGER},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		last_access_time = #{lastAccessTime,jdbcType=TIMESTAMP}
+		where version_id = #{versionId,jdbcType=INTEGER}
+	</update>
+</mapper>

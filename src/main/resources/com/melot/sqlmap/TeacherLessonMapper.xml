@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.TeacherLessonMapper">
+  <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.TeacherLesson">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+    <result column="lesson_level" jdbcType="INTEGER" property="lessonLevel" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="confTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, teacher_id, lesson_level, add_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from conf_teacher_lesson
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conf_teacher_lesson
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.melot.talkee.driver.domain.TeacherLesson">
+  	<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select nextval('seq_teacher_lesson')
+	</selectKey>
+    insert into conf_teacher_lesson (id, teacher_id, lesson_level, 
+      add_time)
+    values (#{id,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{lessonLevel,jdbcType=INTEGER},
+      #{confTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.TeacherLesson">
+    <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="id">
+			select nextval('seq_conf_teacher_lesson')
+	</selectKey>
+    insert into conf_teacher_lesson
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+      <if test="lessonLevel != null">
+        lesson_level,
+      </if>
+      <if test="confTime != null">
+        add_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="lessonLevel != null">
+        #{lessonLevel,jdbcType=INTEGER},
+      </if>
+      <if test="confTime != null">
+        #{confTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.TeacherLesson">
+    update conf_teacher_lesson
+    <set>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="lessonLevel != null">
+        lesson_level = #{lessonLevel,jdbcType=INTEGER},
+      </if>
+      <if test="confTime != null">
+        add_time = #{confTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.TeacherLesson">
+    update conf_teacher_lesson
+    set teacher_id = #{teacherId,jdbcType=INTEGER},
+      lesson_level = #{lessonLevel,jdbcType=INTEGER},
+      add_time = #{confTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteByTeacherId" parameterType="java.lang.Integer">
+    delete from conf_teacher_lesson where teacher_id= #{teacherId,jdbcType=INTEGER}
+  </delete>
+</mapper>

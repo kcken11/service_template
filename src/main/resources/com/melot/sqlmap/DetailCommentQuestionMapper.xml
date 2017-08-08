@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.DetailCommentQuestionMapper">
+	<resultMap id="BaseResultMap"
+		type="com.melot.talkee.driver.domain.DetailCommentQuestion">
+		<id column="question_id" jdbcType="INTEGER" property="questionId" />
+		<result column="question" jdbcType="VARCHAR" property="question" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="dtime" jdbcType="TIMESTAMP" property="dtime" />
+		<result column="question_type" jdbcType="VARCHAR" property="questionType" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		question_id, question, state, dtime, question_type
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_detail_comment_question
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.DetailCommentQuestion"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_detail_comment_question
+		<where>
+			<if test="questionId != null">
+				and question_id = #{questionId,jdbcType=INTEGER}
+			</if>
+			<if test="question != null">
+				and question = #{question,jdbcType=VARCHAR}
+			</if>
+			<if test="state != null">
+				and state = #{state,jdbcType=INTEGER}
+			</if>
+			<if test="dtime != null">
+				and dtime = #{dtime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="questionType != null">
+				and question_type = #{questionType,jdbcType=VARCHAR}
+			</if>
+		</where>		
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from conf_detail_comment_question
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert"
+		parameterType="com.melot.talkee.driver.domain.DetailCommentQuestion">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="questionId">
+			select nextval('seq_detail_comment_question')
+		</selectKey>
+		insert into conf_detail_comment_question (question_id, question, state,
+		dtime, question_type)
+		values (#{questionId,jdbcType=INTEGER}, #{question,jdbcType=VARCHAR},
+		#{state,jdbcType=INTEGER},
+		#{dtime,jdbcType=TIMESTAMP}, #{questionType,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.melot.talkee.driver.domain.DetailCommentQuestion">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="questionId">
+			select nextval('seq_detail_comment_question')
+		</selectKey>
+		insert into conf_detail_comment_question
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="questionId != null">
+				question_id,
+			</if>
+			<if test="question != null">
+				question,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="dtime != null">
+				dtime,
+			</if>
+			<if test="questionType != null">
+				question_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="questionId != null">
+				#{questionId,jdbcType=INTEGER},
+			</if>
+			<if test="question != null">
+				#{question,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				#{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="questionType != null">
+				#{questionType,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.melot.talkee.driver.domain.DetailCommentQuestion">
+		update conf_detail_comment_question
+		<set>
+			<if test="question != null">
+				question = #{question,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				dtime = #{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="questionType != null">
+				question_type = #{questionType,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.melot.talkee.driver.domain.DetailCommentQuestion">
+		update conf_detail_comment_question
+		set question = #{question,jdbcType=VARCHAR},
+		state = #{state,jdbcType=INTEGER},
+		dtime = #{dtime,jdbcType=TIMESTAMP},
+		question_type = #{questionType,jdbcType=VARCHAR}
+		where question_id = #{questionId,jdbcType=INTEGER}
+	</update>
+</mapper>

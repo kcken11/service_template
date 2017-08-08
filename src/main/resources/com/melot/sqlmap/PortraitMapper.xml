@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.PortraitMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.Portrait">
+		<id column="portrait_id" jdbcType="INTEGER" property="portraitId" />
+		<result column="portrait_url" jdbcType="VARCHAR" property="portraitUrl" />
+		<result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="check_aid" jdbcType="INTEGER" property="checkAid" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		portrait_id, portrait_url, upload_time, status,
+		check_aid,user_id
+	</sql>
+
+	<!-- ID seq -->
+	<select id="getPortraitId" resultType="java.lang.Integer">
+		select
+		nextval('seq_res_portrait')
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from res_portrait
+		where portrait_id = #{portraitId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		res_portrait
+		where portrait_id = #{portraitId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.Portrait">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="portraitId">
+			select nextval('seq_res_portrait')
+		</selectKey>
+		insert into res_portrait (portrait_id, portrait_url, upload_time,
+		status, check_aid)
+		values (#{portraitId,jdbcType=INTEGER},
+		#{portraitUrl,jdbcType=VARCHAR},
+		#{uploadTime,jdbcType=TIMESTAMP},
+		#{status,jdbcType=INTEGER}, #{checkAid,jdbcType=INTEGER},
+		#{userId,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.Portrait">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="portraitId">
+			select nextval('seq_res_portrait')
+		</selectKey>
+		insert into res_portrait
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="portraitId != null">
+				portrait_id,
+			</if>
+			<if test="portraitUrl != null">
+				portrait_url,
+			</if>
+			<if test="uploadTime != null">
+				upload_time,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="checkAid != null">
+				check_aid,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="portraitId != null">
+				#{portraitId,jdbcType=INTEGER},
+			</if>
+			<if test="portraitUrl != null">
+				#{portraitUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="uploadTime != null">
+				#{uploadTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="checkAid != null">
+				#{checkAid,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.Portrait">
+		update res_portrait
+		<set>
+			<if test="portraitUrl != null">
+				portrait_url = #{portraitUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="uploadTime != null">
+				upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="checkAid != null">
+				check_aid = #{checkAid,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where portrait_id = #{portraitId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.Portrait">
+		update
+		res_portrait
+		set portrait_url = #{portraitUrl,jdbcType=VARCHAR},
+		upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+		status =
+		#{status,jdbcType=INTEGER},
+		check_aid = #{checkAid,jdbcType=INTEGER},
+		user_id = #{userId,jdbcType=INTEGER}
+		where portrait_id =
+		#{portraitId,jdbcType=INTEGER}
+	</update>
+</mapper>

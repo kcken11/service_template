@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop 
+      	   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:component-scan base-package="com.baidu,com.melot.talkee" />
+	
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<bean id="disconfMgrBean" class="com.baidu.disconf.client.DisconfMgrBean"
+		destroy-method="destroy">
+		<property name="scanPackage" value="com.melot.talkee" />
+	</bean>
+	
+	<bean id="disconfMgrBean2" class="com.baidu.disconf.client.DisconfMgrBeanSecond"
+		init-method="init" destroy-method="destroy">
+	</bean>
+
+	<!-- 使用托管方式的disconf配置( 配置更改.properties配置可做到自动注入reload。非properties配置发生更改,实例能感知到，并重新下载 -->
+	<bean id="reloadableConf"
+		class="com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBean">
+		<property name="locations">
+			<list>
+			    <value>classpath:/conf/datasource.properties</value>
+				<value>classpath:/conf/talkee-user-server.properties</value>
+				<value>classpath:/conf/JedisPoolConfig.xml</value>
+				<value>classpath:/conf/aliyun-oss.properties</value>
+				<value>classpath:/conf/talkee-email.properties</value>
+				<value>classpath:/conf/AgoraConfig.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="reloadableConfProject"
+		class="com.baidu.disconf.client.addons.properties.ReloadingPropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="propertiesArray">
+			<list>
+				<ref bean="reloadableConf" />
+			</list>
+		</property>
+	</bean>
+
+</beans>

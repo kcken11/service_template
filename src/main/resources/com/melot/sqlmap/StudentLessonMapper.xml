@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.StudentLessonMapper">
+    <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.StudentLesson">
+        <id column="hist_id" jdbcType="INTEGER" property="histId"/>
+        <result column="student_id" jdbcType="INTEGER" property="studentId"/>
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId"/>
+        <result column="cons_periods" jdbcType="INTEGER" property="consPeriods"/>
+        <result column="cons_type" jdbcType="INTEGER" property="consType"/>
+        <result column="period_id" jdbcType="INTEGER" property="periodId"/>
+        <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="lesson_state" jdbcType="INTEGER" property="lessonState"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="teacher_commend" jdbcType="VARCHAR" property="teacherCommend"/>
+        <result column="add_point" jdbcType="INTEGER" property="addPoint"/>
+        <result column="lesson_url" jdbcType="VARCHAR" property="lessonUrl"/>
+        <result column="lesson_id" jdbcType="INTEGER" property="lessonId"/>
+        <result column="order_user" jdbcType="INTEGER" property="orderUser"/>
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime"/>
+        <result column="is_detail_comment" jdbcType="INTEGER" property="isDetailComment"/>
+        <result column="is_student_comment" jdbcType="INTEGER" property="isStudentComment"/>
+        <result column="is_teacher_comment" jdbcType="INTEGER" property="isTeacherComment"/>
+        <result column="teacher_url" jdbcType="VARCHAR" property="teacherUrl"/>
+        <result column="review_times" jdbcType="INTEGER" property="reviewTimes"/>
+        <result column="cancle_user" jdbcType="INTEGER" property="cancleUser"/>
+        <result column="cancle_reason" jdbcType="VARCHAR" property="cancleReason"/>
+        <result column="student_url" jdbcType="VARCHAR" property="studentUrl"/>
+        <result column="channel_id" jdbcType="VARCHAR" property="channelId"/>
+        <result column="channel_key" jdbcType="VARCHAR" property="channelKey"/>
+        <result column="cancle_time" jdbcType="TIMESTAMP" property="cancleTime"/>
+    </resultMap>
+
+    <resultMap id="recordResultMap" type="java.util.HashMap">
+        <result column="student_id" jdbcType="INTEGER" property="studentId"/>
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId"/>
+        <result column="period_id" jdbcType="INTEGER" property="periodId"/>
+        <result column="lesson_id" jdbcType="INTEGER" property="lessonId"/>
+        <result column="lesson_name" jdbcType="VARCHAR" property="lessonName"/>
+        <result column="student_start_time" jdbcType="VARCHAR" property="studentStartTime"/>
+        <result column="teacher_start_time" jdbcType="VARCHAR" property="teacherStartTime"/>
+        <result column="student_url" jdbcType="VARCHAR" property="studentUrl"/>
+        <result column="teacher_url" jdbcType="VARCHAR" property="teacherUrl"/>
+        <result column="student_duration" jdbcType="INTEGER" property="studentDuration"/>
+        <result column="teacher_duration" jdbcType="INTEGER" property="teacherDuration"/>
+
+    </resultMap>
+
+    <resultMap id="OrderLessonResultMap" type="com.melot.talkee.driver.domain.OrderLesson">
+        <id column="hist_id" jdbcType="INTEGER" property="histId"/>
+        <result column="student_id" jdbcType="INTEGER" property="studentId"/>
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId"/>
+        <result column="period_id" jdbcType="INTEGER" property="periodId"/>
+        <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="lesson_state" jdbcType="INTEGER" property="lessonState"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="lesson_url" jdbcType="VARCHAR" property="lessonUrl"/>
+        <result column="lesson_id" jdbcType="INTEGER" property="lessonId"/>
+        <result column="order_user" jdbcType="INTEGER" property="orderUser"/>
+        <result column="order_time" jdbcType="TIMESTAMP" property="orderTime"/>
+        <result column="publish_type" jdbcType="INTEGER" property="publishType"/>
+        <result column="teacher_commend" jdbcType="VARCHAR" property="teacherCommend"/>
+        <result column="is_detail_comment" jdbcType="INTEGER" property="isDetailComment"/>
+        <result column="is_student_comment" jdbcType="INTEGER" property="isStudentComment"/>
+        <result column="is_teacher_comment" jdbcType="INTEGER" property="isTeacherComment"/>
+        <collection property="studentCheckin" ofType="com.melot.talkee.driver.domain.StudentCheckin"
+                    select="com.melot.talkee.dao.StudentCheckinMapper.selectByPeriodAndStudentId"
+                    column="{studentId = student_id,periodId = period_id}"></collection>
+        <collection property="teacherCheckin" ofType="com.melot.talkee.driver.domain.TeacherCheckin"
+                    select="com.melot.talkee.dao.TeacherCheckinMapper.selectByPeriodAndTeacherId"
+                    column="teacherId = teacher_id,periodId = period_id}"></collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        hist_id, student_id, teacher_id, cons_periods, cons_type, period_id, begin_time,
+        end_time, lesson_state, teacher_commend, add_point, lesson_url, lesson_id, order_user,
+        order_time, is_detail_comment,is_student_comment,is_teacher_comment, teacher_url, review_times, cancle_user,
+        cancle_reason,
+        student_url,cancle_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hist_student_lesson
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByUserIdAndStateList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hist_student_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="consType != null">
+                and cons_type = #{consType,jdbcType=INTEGER}
+            </if>
+            <if test="stateList != null">and lesson_state in
+                <foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+                    #{stateList[${index}]}
+                </foreach>
+            </if>
+        </where>
+        order by begin_time
+    </select>
+
+    <select id="selectLessonRecordByPeriodId" parameterType="java.lang.Integer" resultMap="recordResultMap">
+        select
+        l.period_id,
+        l.lesson_id,
+        l.student_start_time,
+        l.teacher_start_time,
+        l.student_duration,
+        l.teacher_duration,
+        l.student_url,
+        l.teacher_url,
+        c.lesson_name
+        from
+        hist_student_lesson l
+        LEFT JOIN conf_lesson c on l.lesson_id=c.lesson_id
+
+        where l.period_id =#{periodId,jdbcType=INTEGER}
+
+
+    </select>
+
+
+    <!-- 验证添加数据是否有交集 -->
+    <select id="isIntersect" parameterType="java.util.Map" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,teacher_commend
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 publish_type,'' teacherCommend
+        from hist_turn_student_lesson ) temp_order_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="lessonState != null">
+                and lesson_state != #{lessonState,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and (
+                (end_time > #{beginTime} and #{endTime} >= end_time)
+                or
+                (#{endTime} > begin_time and begin_time >= #{beginTime})
+                or
+                (#{beginTime} >= begin_time and end_time >= #{endTime})
+                )
+            </if>
+        </where>
+    </select>
+
+    <select id="getOrderLesson" parameterType="java.util.Map" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,teacher_commend
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 publish_type,'' teacherCommend
+        from hist_turn_student_lesson ) temp_order_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="publishType != null">
+                and publish_type = #{publishType,jdbcType=INTEGER}
+            </if>
+            <if test="beginTime != null and endTime == null">
+                and begin_time >= #{beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="beginTime == null and endTime != null">
+                and #{endTime,jdbcType=TIMESTAMP} >= begin_time
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and begin_time between #{beginTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="stateList != null">and lesson_state in
+                <foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+                    #{stateList[${index}]}
+                </foreach>
+            </if>
+            <if test="periodList != null">and period_id in
+                <foreach item="item" index="index" collection="periodList" open="(" separator="," close=")">
+                    #{periodList[${index}]}
+                </foreach>
+            </if>
+        </where>
+        order by begin_time
+    </select>
+
+    <select id="findPager" parameterType="com.melot.talkee.driver.domain.Pager" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,is_student_comment,is_teacher_comment
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state, 3 as publish_type, is_student_comment, is_teacher_comment
+        from hist_turn_student_lesson ) temp_order_lesson
+        <where>
+            <if test="params!=null">
+                <if test="params.studentId != null">
+                    and student_id = #{params.studentId,jdbcType=INTEGER}
+                </if>
+                <if test="params.teacherId != null">
+                    and teacher_id = #{params.teacherId,jdbcType=INTEGER}
+                </if>
+                <if test="params.publishType != null">
+                    and publish_type = #{params.publishType,jdbcType=INTEGER}
+                </if>
+                <if test="params.beginTime != null and params.endTime == null">
+                    and begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+                </if>
+                <if test="params.beginTime == null and params.endTime != null">
+                    and #{params.endTime,jdbcType=TIMESTAMP} >= begin_time
+                </if>
+                <if test="params.beginTime != null and params.endTime != null">
+                    and begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                    #{params.endTime,jdbcType=TIMESTAMP}
+                </if>
+                <if test="params.stateList != null">and lesson_state in
+                    <foreach item="item" index="index" collection="params.stateList" open="(" separator="," close=")">
+                        #{params.stateList[${index}]}
+                    </foreach>
+                </if>
+            </if>
+        </where>
+        order by begin_time
+        <if test="asc != null and desc == null">asc</if>
+        <if test="asc == null and desc != null">desc</if>
+    </select>
+
+
+    <select id="findAwaitPager" parameterType="com.melot.talkee.driver.domain.Pager" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,is_student_comment,is_teacher_comment, type
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 as publish_type, is_student_comment, is_teacher_comment, type
+        from hist_turn_student_lesson) temp_order_lesson
+        where (lesson_state in (0,1) or (end_time > now() and lesson_state = 3 and type = 1))
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>
+
+        order by begin_time
+        <if test="asc != null and desc == null">asc</if>
+        <if test="asc == null and desc != null">desc</if>
+    </select>
+
+    <select id="findOverPager" parameterType="com.melot.talkee.driver.domain.Pager" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,is_student_comment,is_teacher_comment, type
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 as publish_type, is_student_comment, is_teacher_comment, type
+        from hist_turn_student_lesson) temp_order_lesson
+        where lesson_state in (2,4)  
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>
+
+        order by begin_time
+        <if test="asc != null and desc == null">asc</if>
+        <if test="asc == null and desc != null">desc</if>
+    </select>
+
+    <select id="findLeavePager" parameterType="com.melot.talkee.driver.domain.Pager" resultMap="OrderLessonResultMap">
+        select * from (
+        select l.hist_id,l.student_id,l.teacher_id,l.period_id,l.begin_time,l.end_time,l.lesson_url,l.lesson_id,l.order_user,l.order_time,
+        l.lesson_state,l.cons_type as publish_type,l.is_student_comment,l.is_teacher_comment, l.type,c.abnormal_state
+        from hist_student_lesson l JOIN hist_student_checkin c on l.period_id = c.period_id
+        where ((l.lesson_state = 3 and l.type = 1) or (<![CDATA[ l.end_time < now() ]]> and l.lesson_state = 3 and l.type = 0)) and c.abnormal_state in (1,2,8)
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and l.teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and l.publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and l.begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= l.begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and l.begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>
+
+        UNION all
+        select
+        t.hist_id,t.student_id,t.teacher_id,t.period_id,t.begin_time,t.end_time,t.lesson_url,t.lesson_id,t.order_user,t.order_time,t.trun_video_state
+        as lesson_state , 3 as publish_type, t.is_student_comment, t.is_teacher_comment, t.type,c.abnormal_state
+        from hist_turn_student_lesson t JOIN hist_student_checkin c on t.period_id = c.period_id
+        where ((t.trun_video_state = 3 and t.type = 1) or (<![CDATA[ t.end_time < now() ]]> and t.trun_video_state = 3 and t.type = 0)) and c.abnormal_state in (1,2,8)
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and t.teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and t.publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and t.begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= t.begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and t.begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>) w
+
+        UNION all
+
+        (
+        select l.hist_id,l.student_id,l.teacher_id,l.period_id,l.begin_time,l.end_time,l.lesson_url,l.lesson_id,l.order_user,l.order_time,
+        l.lesson_state,l.cons_type as publish_type,l.is_student_comment,l.is_teacher_comment, l.type,c.abnormal_state
+        from hist_student_lesson l JOIN hist_teacher_checkin c on l.period_id = c.period_id
+        where ((l.lesson_state = 3) or (<![CDATA[ l.end_time < now() ]]> and l.lesson_state = 3 and l.type = 0)) and c.abnormal_state in (1,2)
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and l.teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and l.publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and l.begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= l.begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and l.begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>
+
+        UNION all
+        select
+        t.hist_id,t.student_id,t.teacher_id,t.period_id,t.begin_time,t.end_time,t.lesson_url,t.lesson_id,t.order_user,t.order_time,t.trun_video_state
+        as lesson_state , 3 as publish_type, t.is_student_comment, t.is_teacher_comment, t.type,c.abnormal_state
+        from hist_turn_student_lesson t JOIN hist_teacher_checkin c on t.period_id = c.period_id
+        where ((t.trun_video_state = 3 ) or (<![CDATA[ t.end_time < now() ]]> and t.trun_video_state = 3 and t.type = 0)) and c.abnormal_state in (1,2)
+        <if test="params!=null">
+            <if test="params.teacherId != null">
+                and t.teacher_id = #{params.teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="params.publishType != null">
+                and t.publish_type = #{params.publishType,jdbcType=INTEGER}
+            </if>
+            <if test="params.beginTime != null and params.endTime == null">
+                and t.begin_time >= #{params.beginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="params.beginTime == null and params.endTime != null">
+                and #{params.endTime,jdbcType=TIMESTAMP} >= t.begin_time
+            </if>
+            <if test="params.beginTime != null and params.endTime != null">
+                and t.begin_time between #{params.beginTime,jdbcType=TIMESTAMP} and
+                #{params.endTime,jdbcType=TIMESTAMP}
+            </if>
+        </if>)
+
+        order by begin_time
+        <if test="asc != null and desc == null">asc</if>
+        <if test="asc == null and desc != null">desc</if>
+    </select>
+
+
+    <select id="selectByUserIdAndPeriodId" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hist_student_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="periodId != null">
+                and period_id = #{periodId,jdbcType=INTEGER}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="selectByPeriodId" parameterType="java.lang.Integer" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,teacher_commend,is_detail_comment
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 publish_type,'' teacherCommend , 0 is_detail_comment
+        from hist_turn_student_lesson ) temp_order_lesson
+        where period_id = #{periodId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getOrderLessonByPeriodId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type ,teacher_commend,is_detail_comment,channel_id,channel_key
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 cons_type,'' teacherCommend , 0 is_detail_comment,channel_id,channel_key
+        from hist_turn_student_lesson ) temp_order_lesson
+        where period_id = #{periodId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getLastOrderLesson" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hist_student_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="lastBeginTime != null">
+                and #{lastBeginTime,jdbcType=TIMESTAMP} > begin_time
+            </if>
+            <if test="consType != null">
+                and cons_type = #{consType,jdbcType=INTEGER}
+            </if>
+            <if test="stateList != null">and lesson_state in
+                <foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+                    #{stateList[${index}]}
+                </foreach>
+            </if>
+        </where>
+        order by begin_time desc limit 1
+    </select>
+
+
+    <select id="getNextByUserIdAndType" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hist_student_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="teacherId != null">
+                and teacher_id = #{teacherId,jdbcType=INTEGER}
+            </if>
+            <if test="lastBeginTime != null">
+                and begin_time > #{lastBeginTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="consType != null">
+                and cons_type = #{consType,jdbcType=INTEGER}
+            </if>
+            <if test="stateList != null">and lesson_state in
+                <foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+                    #{stateList[${index}]}
+                </foreach>
+            </if>
+        </where>
+        order by begin_time asc limit 1
+    </select>
+
+
+    <select id="getNextOrderLesson" parameterType="java.util.Map" resultMap="OrderLessonResultMap">
+        select * from (
+        select hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,
+        lesson_state,cons_type as publish_type,teacher_commend,is_detail_comment,is_student_comment,is_teacher_comment
+        from hist_student_lesson
+        UNION all
+        select
+        hist_id,student_id,teacher_id,period_id,begin_time,end_time,lesson_url,lesson_id,order_user,order_time,trun_video_state
+        as lesson_state , 3 publish_type,'' teacherCommend , 0 is_detail_comment,0 is_student_comment,0
+        is_teacher_comment
+        from hist_turn_student_lesson ) temp_order_lesson
+        <where>
+            <if test="studentId != null">
+                and student_id = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="stateList != null">and lesson_state in
+                <foreach item="item" index="index" collection="stateList" open="(" separator="," close=")">
+                    #{stateList[${index}]}
+                </foreach>
+            </if>
+        </where>
+        order by begin_time
+        <if test="orderAsc != null">asc</if>
+        <if test="orderDesc != null">desc</if>
+        limit 1
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from hist_student_lesson
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.melot.talkee.driver.domain.StudentLesson">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_student_lesson')
+        </selectKey>
+        insert into hist_student_lesson (hist_id, student_id, teacher_id,
+        cons_periods, cons_type, period_id,
+        begin_time, end_time, lesson_state,
+        teacher_commend, add_point, lesson_url,
+        lesson_id, order_user, order_time,
+        is_detail_comment,is_student_comment,is_teacher_comment, teacher_url, review_times,
+        cancle_user, cancle_reason, student_url,cancle_time
+        )
+        values (#{histId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER},
+        #{consPeriods,jdbcType=INTEGER}, #{consType,jdbcType=INTEGER}, #{periodId,jdbcType=INTEGER},
+        #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{lessonState,jdbcType=INTEGER},
+        #{teacherCommend,jdbcType=VARCHAR}, #{addPoint,jdbcType=INTEGER}, #{lessonUrl,jdbcType=VARCHAR},
+        #{lessonId,jdbcType=INTEGER}, #{orderUser,jdbcType=INTEGER}, #{orderTime,jdbcType=TIMESTAMP},
+        #{isDetailComment,jdbcType=INTEGER},
+        #{is_student_comment,jdbcType=INTEGER},#{is_teacher_comment,jdbcType=INTEGER},
+        #{teacherUrl,jdbcType=VARCHAR}, #{reviewTimes,jdbcType=INTEGER},
+        #{cancleUser,jdbcType=INTEGER}, #{cancleReason,jdbcType=VARCHAR}, #{studentUrl,jdbcType=VARCHAR},
+        #{cancleTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.StudentLesson">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_student_lesson')
+        </selectKey>
+        insert into hist_student_lesson
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                hist_id,
+            </if>
+            <if test="studentId != null">
+                student_id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+            <if test="consPeriods != null">
+                cons_periods,
+            </if>
+            <if test="consType != null">
+                cons_type,
+            </if>
+            <if test="periodId != null">
+                period_id,
+            </if>
+            <if test="beginTime != null">
+                begin_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="lessonState != null">
+                lesson_state,
+            </if>
+            <if test="teacherCommend != null">
+                teacher_commend,
+            </if>
+            <if test="addPoint != null">
+                add_point,
+            </if>
+            <if test="lessonUrl != null">
+                lesson_url,
+            </if>
+            <if test="lessonId != null">
+                lesson_id,
+            </if>
+            <if test="orderUser != null">
+                order_user,
+            </if>
+            <if test="orderTime != null">
+                order_time,
+            </if>
+            <if test="isDetailComment != null">
+                is_detail_comment,
+            </if>
+            <if test="isStudentComment != null">
+                is_student_comment,
+            </if>
+            <if test="isTeacherComment != null">
+                is_teacher_comment,
+            </if>
+            <if test="teacherUrl != null">
+                teacher_url,
+            </if>
+            <if test="reviewTimes != null">
+                review_times,
+            </if>
+            <if test="cancleUser != null">
+                cancle_user,
+            </if>
+            <if test="cancleReason != null">
+                cancle_reason,
+            </if>
+            <if test="studentUrl != null">
+                student_url,
+            </if>
+            <if test="cancleTime != null">
+                cancle_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                #{histId,jdbcType=INTEGER},
+            </if>
+            <if test="studentId != null">
+                #{studentId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="consPeriods != null">
+                #{consPeriods,jdbcType=INTEGER},
+            </if>
+            <if test="consType != null">
+                #{consType,jdbcType=INTEGER},
+            </if>
+            <if test="periodId != null">
+                #{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null">
+                #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lessonState != null">
+                #{lessonState,jdbcType=INTEGER},
+            </if>
+            <if test="teacherCommend != null">
+                #{teacherCommend,jdbcType=VARCHAR},
+            </if>
+            <if test="addPoint != null">
+                #{addPoint,jdbcType=INTEGER},
+            </if>
+            <if test="lessonUrl != null">
+                #{lessonUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="lessonId != null">
+                #{lessonId,jdbcType=INTEGER},
+            </if>
+            <if test="orderUser != null">
+                #{orderUser,jdbcType=INTEGER},
+            </if>
+            <if test="orderTime != null">
+                #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDetailComment != null">
+                #{isDetailComment,jdbcType=INTEGER},
+            </if>
+            <if test="isStudentComment != null">
+                #{isStudentComment,jdbcType=INTEGER},
+            </if>
+            <if test="isTeacherComment != null">
+                #{isTeacherComment,jdbcType=INTEGER},
+            </if>
+            <if test="teacherUrl != null">
+                #{teacherUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewTimes != null">
+                #{reviewTimes,jdbcType=INTEGER},
+            </if>
+            <if test="cancleUser != null">
+                #{cancleUser,jdbcType=INTEGER},
+            </if>
+            <if test="cancleReason != null">
+                #{cancleReason,jdbcType=VARCHAR},
+            </if>
+            <if test="studentUrl != null">
+                #{studentUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="cancleTime != null">
+                #{cancleTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.StudentLesson">
+        update hist_student_lesson
+        <set>
+            <if test="studentId != null">
+                student_id = #{studentId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                teacher_id = #{teacherId,jdbcType=INTEGER},
+            </if>
+            <if test="consPeriods != null">
+                cons_periods = #{consPeriods,jdbcType=INTEGER},
+            </if>
+            <if test="consType != null">
+                cons_type = #{consType,jdbcType=INTEGER},
+            </if>
+            <if test="periodId != null">
+                period_id = #{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="beginTime != null">
+                begin_time = #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lessonState != null">
+                lesson_state = #{lessonState,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="teacherCommend != null">
+                teacher_commend = #{teacherCommend,jdbcType=VARCHAR},
+            </if>
+            <if test="addPoint != null">
+                add_point = #{addPoint,jdbcType=INTEGER},
+            </if>
+            <if test="lessonUrl != null">
+                lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="lessonId != null">
+                lesson_id = #{lessonId,jdbcType=INTEGER},
+            </if>
+            <if test="orderUser != null">
+                order_user = #{orderUser,jdbcType=INTEGER},
+            </if>
+            <if test="orderTime != null">
+                order_time = #{orderTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDetailComment != null">
+                is_detail_comment = #{isDetailComment,jdbcType=INTEGER},
+            </if>
+            <if test="isStudentComment != null">
+                is_student_comment = #{isStudentComment,jdbcType=INTEGER},
+            </if>
+            <if test="isTeacherComment != null">
+                is_teacher_comment = #{isTeacherComment,jdbcType=INTEGER},
+            </if>
+            <if test="teacherUrl != null">
+                teacher_url = #{teacherUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewTimes != null">
+                review_times = #{reviewTimes,jdbcType=INTEGER},
+            </if>
+            <if test="cancleUser != null">
+                cancle_user = #{cancleUser,jdbcType=INTEGER},
+            </if>
+            <if test="cancleReason != null">
+                cancle_reason = #{cancleReason,jdbcType=VARCHAR},
+            </if>
+            <if test="studentUrl != null">
+                student_url = #{studentUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="studentStartTime != null">
+                student_start_time = #{studentStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="studentDuration != null">
+                student_duration = #{studentDuration,jdbcType=INTEGER},
+            </if>
+            <if test="teacherStartTime != null">
+                teacher_start_time = #{teacherStartTime,jdbcType=VARCHAR},
+            </if>
+            <if test="teacherDuration != null">
+                teacher_duration = #{teacherDuration,jdbcType=INTEGER},
+            </if>
+            <if test="cancleTime != null">
+                cancle_time = #{cancleTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.StudentLesson">
+        update hist_student_lesson
+        set student_id = #{studentId,jdbcType=INTEGER},
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+        cons_periods = #{consPeriods,jdbcType=INTEGER},
+        cons_type = #{consType,jdbcType=INTEGER},
+        period_id = #{periodId,jdbcType=INTEGER},
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+        lesson_state = #{lessonState,jdbcType=INTEGER},
+        teacher_commend = #{teacherCommend,jdbcType=VARCHAR},
+        add_point = #{addPoint,jdbcType=INTEGER},
+        lesson_url = #{lessonUrl,jdbcType=VARCHAR},
+        lesson_id = #{lessonId,jdbcType=INTEGER},
+        order_user = #{orderUser,jdbcType=INTEGER},
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+        is_detail_comment = #{isDetailComment,jdbcType=INTEGER},
+        is_student_comment = #{isStudentComment,jdbcType=INTEGER},
+        is_teacher_comment = #{isTeacherComment,jdbcType=INTEGER},
+        teacher_url = #{teacherUrl,jdbcType=VARCHAR},
+        review_times = #{reviewTimes,jdbcType=INTEGER},
+        cancle_user = #{cancleUser,jdbcType=INTEGER},
+        cancle_reason = #{cancleReason,jdbcType=VARCHAR},
+        student_url = #{studentUrl,jdbcType=VARCHAR},
+        cancle_time = #{cancleTime,jdbcType=TIMESTAMP}
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+</mapper>

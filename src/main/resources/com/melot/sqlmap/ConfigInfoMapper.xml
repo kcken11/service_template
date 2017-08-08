@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.ConfigInfoMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.ConfigInfo">
+		<id column="config_id" jdbcType="INTEGER" property="configId" />
+		<result column="config_key" jdbcType="VARCHAR" property="configKey" />
+		<result column="config_value" jdbcType="VARCHAR" property="configValue" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="config_desc" jdbcType="VARCHAR" property="configDesc" />
+		<result column="platform" jdbcType="VARCHAR" property="platform" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		config_id, config_key, config_value, update_time, status, config_desc,
+		platform
+	</sql>
+	
+	<sql id="temp_config_info">
+		(select config_id, config_key, config_value, update_time, status, config_desc,regexp_split_to_table(platform, ',') as platform from conf_info) as temp_conf_info 
+	</sql>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from conf_info
+		where config_id = #{configId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectByConfigKeyAndPlatform" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from 
+		<include refid="temp_config_info"/>
+		<where>
+			<if test="configKey != null">
+				and config_key = #{configKey,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null">
+				and status = #{status,jdbcType=INTEGER}
+			</if>
+			<if test="platform != null">
+				and platform = #{platform,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from conf_info
+		where config_id = #{configId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.ConfigInfo">
+		insert into conf_info (config_id, config_key, config_value,
+		update_time, status, config_desc,
+		platform)
+		values (#{configId,jdbcType=INTEGER}, #{configKey,jdbcType=VARCHAR},
+		#{configValue,jdbcType=VARCHAR},
+		#{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{configDesc,jdbcType=VARCHAR},
+		#{platform,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.ConfigInfo">
+		insert into conf_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="configId != null">
+				config_id,
+			</if>
+			<if test="configKey != null">
+				config_key,
+			</if>
+			<if test="configValue != null">
+				config_value,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="configDesc != null">
+				config_desc,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="configId != null">
+				#{configId,jdbcType=INTEGER},
+			</if>
+			<if test="configKey != null">
+				#{configKey,jdbcType=VARCHAR},
+			</if>
+			<if test="configValue != null">
+				#{configValue,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="configDesc != null">
+				#{configDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.ConfigInfo">
+		update conf_info
+		<set>
+			<if test="configKey != null">
+				config_key = #{configKey,jdbcType=VARCHAR},
+			</if>
+			<if test="configValue != null">
+				config_value = #{configValue,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="configDesc != null">
+				config_desc = #{configDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where config_id = #{configId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.ConfigInfo">
+		update conf_info
+		set config_key = #{configKey,jdbcType=VARCHAR},
+		config_value = #{configValue,jdbcType=VARCHAR},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		status = #{status,jdbcType=INTEGER},
+		config_desc = #{configDesc,jdbcType=VARCHAR},
+		platform = #{platform,jdbcType=VARCHAR}
+		where config_id = #{configId,jdbcType=INTEGER}
+	</update>
+</mapper>

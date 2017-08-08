@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.LessioningInoutMapper">
+	<resultMap id="BaseResultMap"
+		type="com.melot.talkee.driver.domain.LessioningInout">
+		<id column="hist_id" jdbcType="INTEGER" property="histId" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="platform" jdbcType="INTEGER" property="platform" />
+		<result column="device_uid" jdbcType="VARCHAR" property="deviceUid" />
+		<result column="in_time" jdbcType="TIMESTAMP" property="inTime" />
+		<result column="out_time" jdbcType="TIMESTAMP" property="outTime" />
+		<result column="period_id" jdbcType="INTEGER" property="periodId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		hist_id, user_id, platform, device_uid, in_time, out_time, period_id
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_lessioning_inout
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectByPeriodAndUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_lessioning_inout
+		<where>
+			<if test="userId != null">
+				and	user_id = #{userId,jdbcType=INTEGER}
+			</if>
+			<if test="periodId != null">
+				and	period_id = #{periodId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectLastestByPeriodAndUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_lessioning_inout
+		<where>
+			<if test="userId != null">
+				and	user_id = #{userId,jdbcType=INTEGER}
+			</if>
+			<if test="periodId != null">
+				and	period_id = #{periodId,jdbcType=INTEGER}
+			</if>
+			<if test="platform != null">
+				and	platform = #{platform,jdbcType=INTEGER}
+			</if>
+			<if test="deviceUid != null">
+				and	device_uid = #{deviceUid,jdbcType=VARCHAR}
+			</if>
+			<if test="roleType != null">
+				and	role_Type = #{roleType,jdbcType=VARCHAR}
+			</if>
+		</where>
+		 LIMIT 1 OFFSET 0
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from hist_lessioning_inout
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.LessioningInout">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_lessioning_inout')
+		</selectKey>
+		insert into hist_lessioning_inout (hist_id, user_id, platform,
+		device_uid, in_time, out_time,
+		period_id,role_type)
+		values (#{histId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{platform,jdbcType=INTEGER},
+		#{deviceUid,jdbcType=VARCHAR}, #{inTime,jdbcType=TIMESTAMP}, #{outTime,jdbcType=TIMESTAMP},
+		#{periodId,jdbcType=INTEGER},#{roleType,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.LessioningInout">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+			select nextval('seq_lessioning_inout')
+		</selectKey>
+		insert into hist_lessioning_inout
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				hist_id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+			<if test="deviceUid != null">
+				device_uid,
+			</if>
+			<if test="inTime != null">
+				in_time,
+			</if>
+			<if test="outTime != null">
+				out_time,
+			</if>
+			<if test="periodId != null">
+				period_id,
+			</if>
+			<if test="roleType != null">
+				role_Type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				#{histId,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=INTEGER},
+			</if>
+			<if test="deviceUid != null">
+				#{deviceUid,jdbcType=VARCHAR},
+			</if>
+			<if test="inTime != null">
+				#{inTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="outTime != null">
+				#{outTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodId != null">
+				#{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="roleType != null">
+				#{roleType,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.LessioningInout">
+		update hist_lessioning_inout
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=INTEGER},
+			</if>
+			<if test="deviceUid != null">
+				device_uid = #{deviceUid,jdbcType=VARCHAR},
+			</if>
+			<if test="inTime != null">
+				in_time = #{inTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="outTime != null">
+				out_time = #{outTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodId != null">
+				period_id = #{periodId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.LessioningInout">
+		update hist_lessioning_inout
+		set user_id = #{userId,jdbcType=INTEGER},
+		platform = #{platform,jdbcType=INTEGER},
+		device_uid = #{deviceUid,jdbcType=VARCHAR},
+		in_time = #{inTime,jdbcType=TIMESTAMP},
+		out_time = #{outTime,jdbcType=TIMESTAMP},
+		period_id = #{periodId,jdbcType=INTEGER}
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+</mapper>

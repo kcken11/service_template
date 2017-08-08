@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/task 
+		http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+	<!-- 定时器开关 -->	
+	<task:annotation-driven />
+    
+   <!--  计划任务池 -->
+	<task:scheduler id="talkScheduler" pool-size="2"/>
+	
+	<task:scheduled-tasks scheduler="talkScheduler">
+    	<!-- 每5分执行一次  -->
+     	<task:scheduled ref="cacheRedis" method="refresh" cron="0 0/5 * * * ?"/>
+     	<!-- 每20秒执行一次 -->
+     	<task:scheduled ref="checkLessonState" method="checkLessonState" cron="0/20 * * * * ?"/>
+
+     	<task:scheduled ref="dealEmailAdvice" method="dealAdvice" cron="0/5 * * * * ?"/>
+		<!-- 每5s执行一次  -->
+     	<task:scheduled ref="stopRecord" method="stopRecords" cron="0/5 * * * * ?"/>
+
+	</task:scheduled-tasks>
+	
+	<!-- 调度任务 -->
+	<bean id="cacheRedis" class="com.melot.talkee.schedule.CacheDailyLessonSchedule" init-method="refresh"></bean>
+	
+	<bean id="checkLessonState" class="com.melot.talkee.schedule.CheckLessonStateSchedule"></bean>
+
+	<bean id="dealEmailAdvice" class="com.melot.talkee.schedule.DealEmailAdviceSchedule"></bean>
+
+	<bean id="stopRecord" class="com.melot.talkee.schedule.StopRecordSchedule"></bean>
+
+
+</beans>

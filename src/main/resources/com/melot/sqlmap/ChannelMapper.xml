@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.ChannelMapper">
+    <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.Channel">
+        <id column="channel_id" jdbcType="INTEGER" property="channelId"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="platform" jdbcType="INTEGER" property="platform"/>
+        <result column="cooperation_form" jdbcType="VARCHAR" property="cooperationForm"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    channel_id, channel_name, platform, cooperation_form, state, start_time, end_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from conf_channel
+        where channel_id = #{channelId,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectChannels"  parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from conf_channel
+        <if test="channelType!=0 and channelType!=null">
+            where channel_type=#{channelType,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conf_channel
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.melot.talkee.driver.domain.Channel">
+    insert into conf_channel (channel_id, channel_name, platform, 
+      cooperation_form, state, start_time, 
+      end_time)
+    values (#{channelId,jdbcType=INTEGER}, #{channelName,jdbcType=VARCHAR}, #{platform,jdbcType=INTEGER}, 
+      #{cooperationForm,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.Channel">
+        insert into conf_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="channelName != null">
+                channel_name,
+            </if>
+            <if test="platform != null">
+                platform,
+            </if>
+            <if test="cooperationForm != null">
+                cooperation_form,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelId != null">
+                #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="channelName != null">
+                #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=INTEGER},
+            </if>
+            <if test="cooperationForm != null">
+                #{cooperationForm,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.Channel">
+        update conf_channel
+        <set>
+            <if test="channelName != null">
+                channel_name = #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=INTEGER},
+            </if>
+            <if test="cooperationForm != null">
+                cooperation_form = #{cooperationForm,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where channel_id = #{channelId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.Channel">
+    update conf_channel
+    set channel_name = #{channelName,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=INTEGER},
+      cooperation_form = #{cooperationForm,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </update>
+</mapper>

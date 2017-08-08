@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.TeacherPerformanceMapper">
+	<resultMap id="BaseResultMap"
+		type="com.melot.talkee.driver.domain.TeacherPerformance">
+		<id column="hist_id" jdbcType="INTEGER" property="histId" />
+		<result column="need_periods" jdbcType="INTEGER" property="needPeriods" />
+		<result column="real_periods" jdbcType="INTEGER" property="realPeriods" />
+		<result column="vaild_periods" jdbcType="INTEGER" property="vaildPeriods" />
+		<result column="lesson_type" jdbcType="INTEGER" property="lessonType" />
+		<result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+		<result column="dtime" jdbcType="TIMESTAMP" property="dtime" />
+		<result column="period_id" jdbcType="INTEGER" property="periodId" />
+		<result column="extra_periods" jdbcType="INTEGER" property="extraPeriods" />
+	</resultMap>
+	<resultMap id="SumResultMap"
+		type="com.melot.talkee.driver.domain.TeacherOverPeriodCount">
+		<result column="needSum" jdbcType="INTEGER" property="needPeriods" />
+		<result column="realSum" jdbcType="INTEGER" property="realPeriods" />
+		<result column="vaildSum" jdbcType="INTEGER" property="vaildPeriods" />
+		<result column="extraSum" jdbcType="INTEGER" property="extraPeriods" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		hist_id, need_periods, real_periods, vaild_periods, lesson_type, teacher_id,
+		dtime,
+		period_id,extra_periods
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_teacher_performance
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectSum" parameterType="java.lang.Integer"
+		resultMap="SumResultMap">
+		select
+		case when sum(need_periods) is null then 0 else sum(need_periods) end as
+		needSum,
+		case when sum(vaild_periods) is null then 0 else sum(vaild_periods) end as
+		vaildSum,
+		case when sum(real_periods) is null then 0 else sum(real_periods) end as
+		realSum,
+		case when sum(extra_periods) is null then 0 else sum(extra_periods) end as
+		extraSum 
+		from hist_teacher_performance
+		where teacher_id = #{teacherId,jdbcType=INTEGER}
+	</select>
+
+
+	<select id="selectSumByTeacherAndDtime" parameterType="java.util.Map"
+		resultMap="SumResultMap">
+		select
+		case when sum(need_periods) is null then 0 else sum(need_periods) end as
+		needSum,
+		case when sum(vaild_periods) is null then 0 else sum(vaild_periods) end as
+		vaildSum,
+		case when sum(real_periods) is null then 0 else sum(real_periods) end as
+		realSum,
+		case when sum(extra_periods) is null then 0 else sum(extra_periods) end as
+		extraSum 
+		from hist_teacher_performance
+		<where>
+			<if test="teacherId != null">
+				and teacher_id = #{teacherId,jdbcType=INTEGER} 
+			</if>
+			<if test="dtime != null">
+				and #{dtime,jdbcType=TIMESTAMP} > dtime
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLateByMap" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_teacher_performance
+		<where>
+			<if test="needPeriods != null">
+				and need_periods = #{needPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="realPeriods != null">
+				and real_periods = #{realPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="vaildPeriods != null">
+				and vaild_periods = #{vaildPeriods,jdbcType=INTEGER}
+			</if>
+			<if test="teacherId != null">
+				and teacher_id = #{teacherId,jdbcType=INTEGER}
+			</if>
+			<if test="dtime != null">
+				and dtime > #{dtime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="extraPeriods != null">
+				and extra_periods = #{extraPeriods,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by dtime asc limit 1
+	</select>
+
+
+	<select id="selectByPeriodId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_teacher_performance
+		where period_id = #{periodId,jdbcType=INTEGER} limit 1
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from hist_teacher_performance
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.TeacherPerformance">
+		insert into hist_teacher_performance (hist_id, need_periods, real_periods,
+		vaild_periods, lesson_type, teacher_id,
+		dtime, period_id,extra_periods)
+		values (#{histId,jdbcType=INTEGER}, #{needPeriods,jdbcType=INTEGER},
+		#{realPeriods,jdbcType=INTEGER},
+		#{vaildPeriods,jdbcType=INTEGER}, #{lessonType,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER},
+		#{dtime,jdbcType=TIMESTAMP}, #{periodId,jdbcType=INTEGER}, #{extraPeriods,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.TeacherPerformance">
+		insert into hist_teacher_performance
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				hist_id,
+			</if>
+			<if test="needPeriods != null">
+				need_periods,
+			</if>
+			<if test="realPeriods != null">
+				real_periods,
+			</if>
+			<if test="vaildPeriods != null">
+				vaild_periods,
+			</if>
+			<if test="lessonType != null">
+				lesson_type,
+			</if>
+			<if test="teacherId != null">
+				teacher_id,
+			</if>
+			<if test="dtime != null">
+				dtime,
+			</if>
+			<if test="periodId != null">
+				period_id,
+			</if>
+			<if test="extraPeriods != null">
+				extra_periods,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				#{histId,jdbcType=INTEGER},
+			</if>
+			<if test="needPeriods != null">
+				#{needPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="realPeriods != null">
+				#{realPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="vaildPeriods != null">
+				#{vaildPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="lessonType != null">
+				#{lessonType,jdbcType=INTEGER},
+			</if>
+			<if test="teacherId != null">
+				#{teacherId,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				#{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodId != null">
+				#{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="extraPeriods != null">
+				#{extraPeriods,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.TeacherPerformance">
+		update hist_teacher_performance
+		<set>
+			<if test="needPeriods != null">
+				need_periods = #{needPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="realPeriods != null">
+				real_periods = #{realPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="vaildPeriods != null">
+				vaild_periods = #{vaildPeriods,jdbcType=INTEGER},
+			</if>
+			<if test="lessonType != null">
+				lesson_type = #{lessonType,jdbcType=INTEGER},
+			</if>
+			<if test="teacherId != null">
+				teacher_id = #{teacherId,jdbcType=INTEGER},
+			</if>
+			<if test="dtime != null">
+				dtime = #{dtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="periodId != null">
+				period_id = #{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="extraPeriods != null">
+				extra_periods = #{extraPeriods,jdbcType=INTEGER},
+			</if>
+		</set>
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.TeacherPerformance">
+		update hist_teacher_performance
+		set need_periods = #{needPeriods,jdbcType=INTEGER},
+		real_periods = #{realPeriods,jdbcType=INTEGER},
+		vaild_periods = #{vaildPeriods,jdbcType=INTEGER},
+		lesson_type = #{lessonType,jdbcType=INTEGER},
+		teacher_id = #{teacherId,jdbcType=INTEGER},
+		dtime = #{dtime,jdbcType=TIMESTAMP},
+		period_id = #{periodId,jdbcType=INTEGER},
+		extra_periods = #{extraPeriods,jdbcType=INTEGER}
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+</mapper>

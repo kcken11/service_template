@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.UserStudentMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.StudentInfo">
+		<id column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="cn_nickname" jdbcType="VARCHAR" property="cnNickname" />
+		<result column="en_nickname" jdbcType="VARCHAR" property="enNickname" />
+		<result column="admin_desc" jdbcType="VARCHAR" property="adminDesc" />
+		<result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+		<result column="gender" jdbcType="INTEGER" property="gender" />
+		<result column="cc_id" jdbcType="INTEGER" property="ccId" />
+		<result column="cr_id" jdbcType="INTEGER" property="crId" />
+		<result column="user_type" jdbcType="INTEGER" property="userType" />
+		<result column="user_level" jdbcType="INTEGER" property="userLevel" />
+		<result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+		<result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="tag" jdbcType="INTEGER" property="tag" />
+		<result column="city_id" jdbcType="INTEGER" property="cityId" />
+		<result column="sub_level" jdbcType="INTEGER" property="subLevel" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="phone_num" jdbcType="VARCHAR" property="phoneNum" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_id, cn_nickname, en_nickname, gender, cc_id, cr_id,admin_desc,
+		user_type,
+		user_level,birthday, update_time,tag,city_id,sub_level,last_login_ip,last_login_time,email,phone_num
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from info_user_student
+		where user_id = #{userId,jdbcType=INTEGER}
+	</select>
+	<select id="selectByPhoneNum" parameterType="java.util.Map"
+			resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from info_user_student
+		<where>
+			<if test="phoneNum != null">
+				and phone_num = #{phoneNum,jdbcType=VARCHAR}
+			</if>
+			<if test="userId != null">
+				and user_id != #{userId,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		info_user_student
+		where user_id = #{userId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.StudentInfo">
+		insert into info_user_student
+		(user_id, cn_nickname, en_nickname,
+		gender, cc_id, cr_id,
+		user_type,
+		user_level,birthday, update_time,tag,city_id,sub_level)
+		values (#{userId,jdbcType=INTEGER},
+		#{cnNickname,jdbcType=VARCHAR},
+		#{enNickname,jdbcType=VARCHAR},
+		#{gender,jdbcType=INTEGER}, #{ccId,jdbcType=INTEGER},
+		#{crId,jdbcType=INTEGER},
+		#{userType,jdbcType=INTEGER},
+		#{userLevel,jdbcType=INTEGER},
+		#{birthday,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},#{tag,jdbcType=INTEGER},#{cityId,jdbcType=INTEGER},#{subLevel,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.StudentInfo">
+		insert into info_user_student
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="cnNickname != null">
+				cn_nickname,
+			</if>
+			<if test="enNickname != null">
+				en_nickname,
+			</if>
+			<if test="adminDesc != null">
+				admin_Desc,
+			</if>
+			<if test="gender != null">
+				gender,
+			</if>
+			<if test="ccId != null">
+				cc_id,
+			</if>
+			<if test="crId != null">
+				cr_id,
+			</if>
+			<if test="userType != null">
+				user_type,
+			</if>
+			<if test="classType != null">
+				class_type,
+			</if>
+			<if test="userLevel != null">
+				user_level,
+			</if>
+			<if test="birthday != null">
+				birthday,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="tag != null">
+				tag,
+			</if>
+			<if test="cityId != null">
+				city_id,
+			</if>
+			<if test="subLevel != null">
+				sub_level,
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time,
+			</if>
+			<if test="lastLoginIp != null">
+				last_login_ip,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="phoneNum != null">
+				phone_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="cnNickname != null">
+				#{cnNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="enNickname != null">
+				#{enNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="adminDesc != null">
+			   #{adminDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				#{gender,jdbcType=INTEGER},
+			</if>
+			<if test="ccId != null">
+				#{ccId,jdbcType=INTEGER},
+			</if>
+			<if test="crId != null">
+				#{crId,jdbcType=INTEGER},
+			</if>
+			<if test="userType != null">
+				#{userType,jdbcType=INTEGER},
+			</if>
+			<if test="classType != null">
+				#{classType,jdbcType=INTEGER},
+			</if>
+			<if test="userLevel != null">
+				#{userLevel,jdbcType=INTEGER},
+			</if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tag != null">
+				#{tag,jdbcType=INTEGER},
+			</if>
+			<if test="cityId != null">
+				#{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="subLevel != null">
+				#{subLevel,jdbcType=INTEGER},
+			</if>
+			<if test="lastLoginTime != null">
+				#{lastLoginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastLoginIp != null">
+				#{lastLoginIp,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneNum != null">
+				#{phoneNum,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.StudentInfo">
+		update info_user_student
+		<set>
+			<if test="cnNickname != null">
+				cn_nickname = #{cnNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="enNickname != null">
+				en_nickname = #{enNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="adminDesc != null">
+				admin_Desc = #{adminDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				gender = #{gender,jdbcType=INTEGER},
+			</if>
+			<if test="ccId != null">
+				cc_id = #{ccId,jdbcType=INTEGER},
+			</if>
+			<if test="crId != null">
+				cr_id = #{crId,jdbcType=INTEGER},
+			</if>
+			<if test="userType != null">
+				user_type = #{userType,jdbcType=INTEGER},
+			</if>
+			<if test="userLevel != null">
+				user_level = #{userLevel,jdbcType=INTEGER},
+			</if>
+			<if test="birthday != null">
+				birthday = #{birthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tag != null">
+				tag = #{tag,jdbcType=INTEGER},
+			</if>
+			<if test="cityId != null">
+				city_id = #{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="subLevel != null">
+				sub_level = #{subLevel,jdbcType=INTEGER},
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastLoginIp != null">
+				last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneNum != null">
+				phone_num = #{phoneNum,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.StudentInfo">
+		update
+		info_user_student
+		set cn_nickname = #{cnNickname,jdbcType=VARCHAR},
+		en_nickname = #{enNickname,jdbcType=VARCHAR},
+		gender = #{gender,jdbcType=INTEGER},
+		cc_id = #{ccId,jdbcType=INTEGER},
+		cr_id = #{crId,jdbcType=INTEGER},
+		user_type = #{userType,jdbcType=INTEGER},
+		user_level = #{userLevel,jdbcType=INTEGER},
+		birthday = #{birthday,jdbcType=TIMESTAMP},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		tag = #{tag,jdbcType=INTEGER},
+		city_id = #{cityId,jdbcType=INTEGER},
+		sub_level = #{subLevel,jdbcType=INTEGER}
+		where
+		user_id = #{userId,jdbcType=INTEGER}
+	</update>
+</mapper>

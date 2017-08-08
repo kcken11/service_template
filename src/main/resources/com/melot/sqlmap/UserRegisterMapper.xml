@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.melot.talkee.dao.UserRegisterMapper">
+
+	<resultMap type="com.melot.talkee.driver.domain.UserInfo" id="UserInfoMap">
+		<result property="userId" column="user_id" />
+		<result property="channelId" column="channel_id" />
+		<result property="registerTime" column="register_time" />
+		<result property="registerIp" column="register_ip" />
+		<result property="terminal" column="terminal" />
+		<result property="phoneNum" column="phone_num" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+		<result property="port" column="port" />
+		<result property="channelType" column="channel_type" />
+		<result property="relatitionship" column="relatitionship" />
+		<result property="describe" column="describe" />
+		<result property="accountType" column="account_type" />
+		<result property="loginName" column="login_name" />
+	</resultMap>
+
+	<!-- 根据条件查询用户注册信息 -->
+	<select id="getUserRegister" parameterType="com.melot.talkee.driver.domain.UserInfo"
+		resultMap="UserInfoMap">
+		select * from info_user_register
+		<where>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="channelId != null">and channel_id = #{channelId}</if>
+			<if test="registerTime != null">and register_time = #{registerTime}</if>
+			<if test="registerIp != null">and register_ip = #{registerIp}</if>
+			<if test="terminal != null">and terminal = #{terminal}</if>
+			<if test="phoneNum != null">and phone_num = #{phoneNum}</if>
+			<if test="email != null">and email = #{email}</if>
+			<if test="password != null">and password = #{password}</if>
+			<if test="port != null">and port = #{port}</if>
+			<if test="channelType != null">and channel_type = #{channelType}</if>
+			<if test="relatitionship != null">and relatitionship = #{relatitionship}</if>
+			<if test="describe != null">and describe = #{describe}</if>
+			<if test="accountType != null">and account_type = #{accountType}</if>
+			<if test="loginName != null">and login_name = #{loginName}</if>
+		</where>
+	</select>
+
+	<!-- 根据主键ID获取用户注册信息 -->
+	<select id="getUserRegisterById" parameterType="java.lang.Integer"
+		resultMap="UserInfoMap">
+		select * from info_user_register where user_id = #{userId}
+	</select>
+	
+	<!-- 根据登录名获取用户注册信息 -->
+	<select id="getUserRegisterByLoginName" parameterType="java.lang.String" resultMap="UserInfoMap">
+		select * from info_user_register where login_name = #{loginName}
+	</select>
+	
+	<!-- 根据email获取用户注册信息 -->
+	<select id="getUserRegisterByEmail" parameterType="java.lang.String" resultMap="UserInfoMap">
+		select * from info_user_register where email = #{email}
+	</select>
+	
+	<!-- 根据phoneNum获取用户注册信息 -->
+	<select id="getUserRegisterByPhoneNum" parameterType="java.lang.String" resultMap="UserInfoMap">
+		select * from info_user_register where phone_num = #{phoneNum}
+	</select>
+
+	<!-- ID seq -->
+	<select id="getUserRegisterId" resultType="java.lang.Integer">
+		select
+		nextval('seq_info_user_register')
+	</select>
+
+	<insert id="insertUserRegister" parameterType="com.melot.talkee.driver.domain.UserInfo">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="userId">
+			select nextval('seq_info_user_register')
+		</selectKey>
+		insert into info_user_register
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">user_id,</if>
+			<if test="channelId != null">channel_id,</if>
+			<if test="registerTime != null">register_time,</if>
+			<if test="registerIp != null">register_ip,</if>
+			<if test="terminal != null">terminal,</if>
+			<if test="phoneNum != null">phone_num,</if>
+			<if test="email != null">email,</if>
+			<if test="password != null">password,</if>
+			<if test="port != null">port,</if>
+			<if test="channelType != null">channel_type,</if>
+			<if test="relatitionship != null">relatitionship,</if>
+			<if test="describe != null">describe,</if>
+			<if test="accountType != null">account_type,</if>
+			<if test="loginName != null">login_name,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">#{userId},</if>
+			<if test="channelId != null">#{channelId},</if>
+			<if test="registerTime != null">#{registerTime},</if>
+			<if test="registerIp != null">#{registerIp},</if>
+			<if test="terminal != null">#{terminal},</if>
+			<if test="phoneNum != null">#{phoneNum},</if>
+			<if test="email != null">#{email},</if>
+			<if test="password != null">#{password},</if>
+			<if test="port != null">#{port},</if>
+			<if test="channelType != null">#{channelType},</if>
+			<if test="relatitionship != null">#{relatitionship},</if>
+			<if test="describe != null">#{describe},</if>
+			<if test="accountType != null">#{accountType},</if>
+			<if test="loginName != null">#{loginName},</if>
+		</trim>
+	</insert>
+
+	<update id="updateUserRegisterById" parameterType="com.melot.talkee.driver.domain.UserInfo">
+		update info_user_register
+		<set>
+			<if test="channelId != null"> channel_id = #{channelId},</if>
+			<if test="registerTime != null"> register_time = #{registerTime},</if>
+			<if test="registerIp != null"> register_ip = #{registerIp},</if>
+			<if test="terminal != null"> terminal = #{terminal},</if>
+			<if test="phoneNum != null"> phone_num = #{phoneNum},</if>
+			<if test="email != null"> email = #{email},</if>
+			<if test="password != null"> password = #{password},</if>
+			<if test="port != null"> port = #{port},</if>
+			<if test="channelType != null"> channel_type = #{channelType},</if>
+			<if test="relatitionship != null"> relatitionship = #{relatitionship},</if>
+			<if test="describe != null"> describe = #{describe},</if>
+			<if test="accountType != null"> account_type = #{accountType},</if>
+			<if test="loginName != null"> login_name = #{loginName},</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+
+	<delete id="deleteUserRegister" parameterType="com.melot.talkee.driver.domain.UserInfo">
+		delete from info_user_register
+		<where>
+			<if test="userId != null">and user_id = #{userId}</if>
+			<if test="channelId != null">and channel_id = #{channelId}</if>
+			<if test="registerTime != null">and register_time = #{registerTime}</if>
+			<if test="registerIp != null">and register_ip = #{registerIp}</if>
+			<if test="terminal != null">and terminal = #{terminal}</if>
+			<if test="phoneNum != null">and phone_num = #{phoneNum}</if>
+			<if test="email != null">and email = #{email}</if>
+			<if test="password != null">and password = #{password}</if>
+			<if test="port != null">and port = #{port}</if>
+			<if test="channelType != null">and channel_type = #{channelType}</if>
+			<if test="relatitionship != null">and relatitionship = #{relatitionship}</if>
+			<if test="describe != null">and describe = #{describe}</if>
+			<if test="accountType != null">and account_type = #{accountType}</if>
+			<if test="loginName != null">and login_name = #{loginName}</if>
+		</where>
+	</delete>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.UserInfo">
+		update info_user_register
+		<set>
+			<if test="channelId != null">
+				channel_id = #{channelId,jdbcType=INTEGER},
+			</if>
+			<if test="registerTime != null">
+				register_time = #{registerTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="registerIp != null">
+				register_ip = #{registerIp,jdbcType=VARCHAR},
+			</if>
+			<if test="terminal != null">
+				terminal = #{terminal,jdbcType=INTEGER},
+			</if>
+			<if test="phoneNum != null">
+				phone_num = #{phoneNum,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="port != null">
+				port = #{port,jdbcType=INTEGER},
+			</if>
+			<if test="channelType != null">
+				channel_type = #{channelType,jdbcType=INTEGER},
+			</if>
+			<if test="relatitionship != null">
+				relatitionship = #{relatitionship,jdbcType=VARCHAR},
+			</if>
+			<if test="describe != null">
+				describe = #{describe,jdbcType=VARCHAR},
+			</if>
+			<if test="accountType != null">
+				account_type = #{accountType,jdbcType=INTEGER},
+			</if>
+			<if test="loginName != null">
+				login_name = #{loginName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+</mapper>
+

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.UserLogMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.dao.domain.UserLog">
+		<id column="hist_id" jdbcType="INTEGER" property="histId" />
+		<result column="token" jdbcType="VARCHAR" property="token" />
+		<result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="platform" jdbcType="INTEGER" property="platform" />
+		<result column="login_type" jdbcType="INTEGER" property="loginType" />
+		<result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+		<result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		hist_id, token, user_id, platform, login_type, login_time,
+		logout_time
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_user_log
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</select>
+
+	<select id="getlastBySelective" parameterType="com.melot.talkee.dao.domain.UserLog"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from hist_user_log
+		<where>
+			<if test="histId != null">
+				and hist_id = #{histId,jdbcType=INTEGER}
+			</if>
+			<if test="token != null">
+				and token = #{token,jdbcType=VARCHAR}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId,jdbcType=INTEGER}
+			</if>
+		</where>
+		order by login_time desc limit 1
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		hist_user_log
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.dao.domain.UserLog">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="histId">
+			select nextval('seq_hist_user_log')
+		</selectKey>
+		insert into hist_user_log (hist_id, token, user_id,
+		platform,
+		login_type, login_time,
+		logout_time)
+		values (#{histId,jdbcType=INTEGER},
+		#{token,jdbcType=VARCHAR},
+		#{userId,jdbcType=INTEGER},
+		#{platform,jdbcType=INTEGER}, #{loginType,jdbcType=INTEGER},
+		#{loginTime,jdbcType=TIMESTAMP},
+		#{logoutTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.melot.talkee.dao.domain.UserLog">
+		<selectKey resultType="java.lang.Integer" order="BEFORE"
+			keyProperty="histId">
+			select nextval('seq_hist_user_log')
+		</selectKey>
+		insert into hist_user_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				hist_id,
+			</if>
+			<if test="token != null">
+				token,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+			<if test="loginType != null">
+				login_type,
+			</if>
+			<if test="loginTime != null">
+				login_time,
+			</if>
+			<if test="logoutTime != null">
+				logout_time,
+			</if>
+			<if test="loginIp != null">
+				login_ip,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="histId != null">
+				#{histId,jdbcType=INTEGER},
+			</if>
+			<if test="token != null">
+				#{token,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=INTEGER},
+			</if>
+			<if test="loginType != null">
+				#{loginType,jdbcType=INTEGER},
+			</if>
+			<if test="loginTime != null">
+				#{loginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="logoutTime != null">
+				#{logoutTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginIp != null">
+				#{loginIp,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.dao.domain.UserLog">
+		update hist_user_log
+		<set>
+			<if test="token != null">
+				token = #{token,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=INTEGER},
+			</if>
+			<if test="loginType != null">
+				login_type = #{loginType,jdbcType=INTEGER},
+			</if>
+			<if test="loginTime != null">
+				login_time = #{loginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="logoutTime != null">
+				logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where hist_id = #{histId,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.dao.domain.UserLog">
+		update
+		hist_user_log
+		set token = #{token,jdbcType=VARCHAR},
+		user_id =
+		#{userId,jdbcType=INTEGER},
+		platform = #{platform,jdbcType=INTEGER},
+		login_type = #{loginType,jdbcType=INTEGER},
+		login_time =
+		#{loginTime,jdbcType=TIMESTAMP},
+		logout_time =
+		#{logoutTime,jdbcType=TIMESTAMP}
+		where hist_id =
+		#{histId,jdbcType=INTEGER}
+	</update>
+</mapper>

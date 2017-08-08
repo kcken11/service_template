@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/task 
+		http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+		
+	<!-- 缓存配置CacheConfig 继承 net.sf.ehcache.config.CacheConfiguration -->
+	<!-- 通过disconf 动态配置 -->
+	<bean id="cacheConfig" class="com.melot.talkee.cache.CacheConfig">
+		<property name="name" value="${cache.name=configInfoCache}"/>
+		<!-- 100M 本地内存缓存 -->
+		<property name="maxEntriesLocalHeap" value="${cache.maxEntriesLocalHeap=102400}"/>
+		<!-- 最大空闲周期  秒-->
+		<property name="timeToIdleSeconds" value="${cache.timeToIdleSeconds=86400}"/>
+		<!-- 最大生命周期  秒-->
+		<property name="timeToLiveSeconds" value="${cache.timeToLiveSeconds=172800}"/>
+	</bean> 
+
+	<bean id="cacheService" class="com.melot.talkee.cache.impl.EhCacheService" init-method="init" destroy-method="destroy">
+		<property name="cacheConfig" ref="cacheConfig"></property>  
+	</bean>
+</beans>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.PublishLessonMapper">
+	<resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.PublishLesson">
+		<id column="period_id" jdbcType="INTEGER" property="periodId" />
+		<result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+		<result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="teacher_id" jdbcType="INTEGER" property="teacherId" />
+		<result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+		<result column="publish_type" jdbcType="INTEGER" property="publishType" />
+		<result column="max_num" jdbcType="INTEGER" property="maxNum" />
+		<result column="lesson_id" jdbcType="INTEGER" property="lessonId" />
+		<result column="student_id" jdbcType="INTEGER" property="studentId" />
+		<result column="order_num" jdbcType="INTEGER" property="orderNum" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		period_id, begin_time, end_time, state, teacher_id, publish_time, publish_type,
+		max_num,lesson_id,student_id,order_num
+	</sql>
+	
+		<!-- ID seq -->
+	<select id="getSeqPublistLesson" resultType="java.lang.Integer">
+		select nextval('seq_publist_lesson')
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action_teacher_public_freetime
+		where period_id = #{periodId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectBySelectiveMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action_teacher_public_freetime
+		<where>
+	      <if test="periodIdList != null">and period_id in 
+	       	  	<foreach item="item" index="index" collection="periodIdList" open="(" separator="," close=")">
+					#{periodIdList[${index}]}
+				</foreach>
+	      </if>
+	      <if test="beginTime != null and endTime != null"> and begin_time between #{beginTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}</if>
+		  <if test="teacherId != null"> and teacher_id = #{teacherId,jdbcType=INTEGER} </if>
+		  <if test="publishType != null"> and publish_type = #{publishType,jdbcType=INTEGER} </if>
+	      <if test="state != null"> and state = #{state,jdbcType=INTEGER} </if>
+	      <if test="lessonId != null"> and lesson_id = #{lessonId,jdbcType=INTEGER} </if>
+	      <if test="studentId != null"> and student_id = #{studentId,jdbcType=INTEGER} </if>
+		</where>
+		order by begin_time
+	  </select>
+	
+	<!-- 验证添加数据是否有交集 -->
+	<select id="isIntersect" parameterType="com.melot.talkee.driver.domain.PublishLesson" resultMap="BaseResultMap">
+		select * from action_teacher_public_freetime
+		<where>
+			<if test="teacherId != null"> and teacher_id = #{teacherId} </if>
+			<if test="beginTime != null and endTime != null">
+				and (
+				(end_time > #{beginTime} and #{endTime} >= end_time)
+				or
+				(#{endTime} > begin_time and begin_time >= #{beginTime})
+				or
+				(#{beginTime} >= begin_time and end_time >= #{endTime})
+				)
+			</if>
+		</where>
+	</select>
+	
+	<select id="getMonthCountBySelective" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action_teacher_public_freetime
+		<where>
+			<if test="beginTime != null and endTime != null"> and begin_time between #{beginTime} and #{endTime}</if>
+			<if test="teacherId != null"> and teacher_id = #{teacherId,jdbcType=INTEGER} </if>
+			<if test="publishType != null"> and publish_type = #{publishType,jdbcType=INTEGER} </if>
+		</where>
+		order by begin_time asc
+	</select>
+	
+	<select id="getLatePublishLesson" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action_teacher_public_freetime where begin_time between now() and now() + '1 D' and state = #{state,jdbcType=INTEGER} order by begin_time
+	</select>
+	
+	<select id="selectByDaily" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action_teacher_public_freetime
+		<where>
+			<if test="periodId != null"> and period_id = #{periodId,jdbcType=INTEGER} </if>
+			<if test="beginTime != null and endTime != null"> and begin_time between #{beginTime} and #{endTime}</if>
+			<if test="state != null"> and state = #{state,jdbcType=INTEGER} </if>
+			<if test="teacherId != null"> and teacher_id = #{teacherId,jdbcType=INTEGER} </if>
+			<if test="publishType != null"> and publish_type = #{publishType,jdbcType=INTEGER} </if>
+			<if test="maxNum != null"> and max_num = #{maxNum,jdbcType=INTEGER} </if>
+			<if test="lessonId != null"> and lesson_id = #{lessonId,jdbcType=INTEGER} </if>
+	      	<if test="studentId != null"> and student_id = #{studentId,jdbcType=INTEGER} </if>
+		</where>
+		order by begin_time
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from action_teacher_public_freetime
+		where period_id = #{periodId,jdbcType=INTEGER}
+	</delete>
+	
+	<delete id="deleteBySelectiveMap" parameterType="java.util.Map">
+		delete from action_teacher_public_freetime
+		<where>
+			<if test="periodId != null"> and period_id = #{periodId,jdbcType=INTEGER} </if>
+			<if test="beginTime != null and endTime != null"> and begin_time between #{beginTime} and #{endTime}</if>
+			<if test="state != null"> and state = #{state,jdbcType=INTEGER} </if>
+			<if test="teacherId != null"> and teacher_id = #{teacherId,jdbcType=INTEGER} </if>
+			<if test="publishType != null"> and publish_type = #{publishType,jdbcType=INTEGER} </if>
+			<if test="maxNum != null"> and max_num = #{maxNum,jdbcType=INTEGER} </if>
+			<if test="lessonId != null"> and lesson_id = #{lessonId,jdbcType=INTEGER} </if>
+	      	<if test="studentId != null"> and student_id = #{studentId,jdbcType=INTEGER} </if>
+		</where>
+	</delete>
+	<insert id="insert" parameterType="com.melot.talkee.driver.domain.PublishLesson">
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="periodId">
+			select nextval('seq_publist_lesson')
+		</selectKey>
+		insert into action_teacher_public_freetime (period_id, begin_time, end_time,
+		state, teacher_id, publish_time,
+		publish_type, max_num,lesson_id,student_id,order_num)
+		values (#{periodId,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP},
+		#{endTime,jdbcType=TIMESTAMP},
+		#{state,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP},
+		#{publishType,jdbcType=INTEGER}, #{maxNum,jdbcType=INTEGER}, #{lessonId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER},#{orderNum,jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.PublishLesson">
+	
+		<selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="periodId">
+			select nextval('seq_publist_lesson')
+		</selectKey>
+	
+		insert into action_teacher_public_freetime
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="periodId != null">
+				period_id,
+			</if>
+			<if test="beginTime != null">
+				begin_time,
+			</if>
+			<if test="endTime != null">
+				end_time,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="teacherId != null">
+				teacher_id,
+			</if>
+			<if test="publishTime != null">
+				publish_time,
+			</if>
+			<if test="publishType != null">
+				publish_type,
+			</if>
+			<if test="maxNum != null">
+				max_num,
+			</if>
+			<if test="lessonId != null">
+				lesson_id,
+			</if>
+			<if test="studentId != null">
+				student_id,
+			</if>
+			<if test="orderNum != null">
+				order_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="periodId != null">
+				#{periodId,jdbcType=INTEGER},
+			</if>
+			<if test="beginTime != null">
+				#{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				#{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			<if test="teacherId != null">
+				#{teacherId,jdbcType=INTEGER},
+			</if>
+			<if test="publishTime != null">
+				#{publishTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="publishType != null">
+				#{publishType,jdbcType=INTEGER},
+			</if>
+			<if test="maxNum != null">
+				#{maxNum,jdbcType=INTEGER},
+			</if>
+			<if test="lessonId != null">
+				#{lessonId,jdbcType=INTEGER},
+			</if>
+			<if test="studentId != null">
+				#{studentId,jdbcType=INTEGER},
+			</if>
+			<if test="orderNum != null">
+				#{orderNum,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.PublishLesson">
+		update action_teacher_public_freetime
+		<set>
+			<if test="beginTime != null">
+				begin_time = #{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+			<if test="teacherId != null">
+				teacher_id = #{teacherId,jdbcType=INTEGER},
+			</if>
+			<if test="publishTime != null">
+				publish_time = #{publishTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="publishType != null">
+				publish_type = #{publishType,jdbcType=INTEGER},
+			</if>
+			<if test="maxNum != null">
+				max_num = #{maxNum,jdbcType=INTEGER},
+			</if>
+			<if test="lessonId != null">
+				lesson_id = #{lessonId,jdbcType=INTEGER},
+			</if>
+			<if test="studentId != null">
+				student_id = #{studentId,jdbcType=INTEGER},
+			</if>
+			<if test="orderNum != null">
+				order_num = #{orderNum,jdbcType=INTEGER},
+			</if>
+		</set>
+		where period_id = #{periodId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.PublishLesson">
+		update action_teacher_public_freetime
+		set begin_time = #{beginTime,jdbcType=TIMESTAMP},
+		end_time = #{endTime,jdbcType=TIMESTAMP},
+		state = #{state,jdbcType=INTEGER},
+		teacher_id = #{teacherId,jdbcType=INTEGER},
+		publish_time = #{publishTime,jdbcType=TIMESTAMP},
+		publish_type = #{publishType,jdbcType=INTEGER},
+		max_num = #{maxNum,jdbcType=INTEGER},
+		lesson_id = #{lessonId,jdbcType=INTEGER},
+		student_id = #{studentId,jdbcType=INTEGER},
+		order_num = #{orderNum,jdbcType=INTEGER}
+		where period_id = #{periodId,jdbcType=INTEGER}
+	</update>
+</mapper>

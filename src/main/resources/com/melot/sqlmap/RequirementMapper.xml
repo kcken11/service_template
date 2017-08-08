@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.RequirementMapper">
+    <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.Requirement">
+        <id column="require_id" jdbcType="INTEGER" property="requireId"/>
+        <result column="requirement" jdbcType="VARCHAR" property="requirement"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="en_requirement" jdbcType="VARCHAR" property="enRequirement"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        require_id, requirement,en_requirement,type
+    </sql>
+
+    <select id="selectRequirement" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from conf_stu_req_to_tec where
+        require_id in
+        <foreach item="item" index="index" collection="requireIds" open="(" separator="," close=")">
+            #{requireIds[${index}]}
+        </foreach>
+    </select>
+
+    <select id="selectRequirementList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from conf_stu_req_to_tec  ORDER BY require_id asc
+    </select>
+
+</mapper>

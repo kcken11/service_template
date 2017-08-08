@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    
+     <!-- Redis -->
+	<bean id="redisDataSourceFactory" class="com.melot.common.melot_jedis.RedisDataSourceFactory" destroy-method="destroy">
+		<constructor-arg name="configFilePath" value="conf/JedisPoolConfig.xml"/>
+   	</bean>
+   	<bean id="userRedisSource" class="com.melot.common.melot_jedis.JedisWrapper">
+		<constructor-arg name="factory" ref="redisDataSourceFactory"/>
+		<constructor-arg name="sourceName" value="UserRedisConfig"/>
+    </bean>
+    <bean id="lessonRedisSource" class="com.melot.common.melot_jedis.JedisWrapper">
+		<constructor-arg name="factory" ref="redisDataSourceFactory"/>
+		<constructor-arg name="sourceName" value="UserRedisConfig"/>
+    </bean>
+    
+    <!-- 记录对应版本最后一次访问时间 -->
+    <bean id="lastAccessEventHandler"  class="com.melot.talkee.redis.executor.LastAccessEventHandler" init-method="execute">
+    	<property name="JedisWrapper" ref="lessonRedisSource"></property>
+		<property name="subscribePatter" value="version_last_accuss"></property>
+    </bean>
+		
+	<!-- 通过disconf 动态设置路由规则 -->
+	<bean id="aliEcloudSource" class="com.melot.talkee.source.AliEcloudSource">
+		<property name="endpoint" value="${endpoint=http://oss-cn-hangzhou.aliyuncs.com}"/>      
+		<property name="bucket" value="${bucket=kkworld}"/>        
+		<property name="accessKeyId" value="${accessKeyId=LTAIOA5WK6RxVZLP}"/>   
+		<property name="accessKeySecret" value="${accessKeySecret=FPvo8nKN3fjVnQt4kf3qOnEcJkRH0o}"/>
+		<property name="roleArn" value="${roleArn=acs:ram::1853458263119816:role/ossclient}"/>        
+		<property name="region" value="${region=cn-hangzhou}"/>         
+		<property name="stsApiVersion" value="${stsApiVersion=2015-04-01}"/> 
+	</bean>
+
+	<!--邮件配置信息  -->
+    <bean id="emailSource" class="com.melot.talkee.source.EmailSource">
+	    <property name="password" value="${mail.password=A123456a}"/>
+	    <property name="sender" value="${mail.sender=noreply@kktalkee.com}"/>
+	    <property name="nickname" value="${mail.sender.nickname=米乐英语}"/>
+	    <property name="smtphost" value="${mail.smtp.host=smtp.exmail.qq.com}"/>
+	    <property name="smtpport" value="${mail.smtp.port=465}"/>
+	</bean>
+
+	<bean id="talkUserService"  class="com.melot.talkee.service.impl.TalkUserServiceImpl"/>
+	
+	<bean id="talkLessonService"  class="com.melot.talkee.service.impl.TalkLessonServiceImpl"/>
+	
+	<bean id="talkPublishService"  class="com.melot.talkee.service.impl.TalkPublishServiceImpl"/>
+	
+	<bean id="talkOrderService"  class="com.melot.talkee.service.impl.TalkOrderServiceImpl"/>
+
+	<bean id="talkRecordService"  class="com.melot.talkee.service.impl.TalkRecordServiceImpl"/>
+
+	<bean id="talkSecurityService"  class="com.melot.talkee.service.impl.TalkSecurityServiceImpl">
+		 <property name="aliEcloudSource" ref="aliEcloudSource"/>
+	</bean>
+
+	<bean id="talkClassService"  class="com.melot.talkee.service.impl.TalkClassServiceImpl"/>
+
+	<bean id="talkTradeOrderService"  class="com.melot.talkee.service.impl.TalkTradeOrderServiceImpl"/>
+
+
+	<bean id="talkEmailService" class="com.melot.talkee.service.impl.TalkEmailServiceImpl">
+	   <property name="emailSource" ref="emailSource"/>
+	</bean>
+	
+	<bean id="talkCommonService"  class="com.melot.talkee.service.impl.TalkCommonServiceImpl"/>
+	
+	<bean id="aliyun" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${ecloud.aliyun=http://kkworld.oss-cn-hangzhou.aliyuncs.com}"/>
+    </bean>
+
+	<bean id="agoraServer" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${agora.server.url=http://yanxxcloud.cn:6666/Agora/services/room/recorder}"/>
+	</bean>
+</beans>

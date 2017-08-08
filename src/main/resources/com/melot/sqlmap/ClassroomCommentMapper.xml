@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melot.talkee.dao.ClassroomCommentMapper">
+    <resultMap id="BaseResultMap" type="com.melot.talkee.driver.domain.ClassroomComment">
+        <id column="hist_id" jdbcType="INTEGER" property="histId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="period_id" jdbcType="INTEGER" property="periodId"/>
+        <result column="teacher_id" jdbcType="INTEGER" property="teacherId"/>
+        <result column="video_sharpness" jdbcType="INTEGER" property="videoSharpness"/>
+        <result column="sound_articulation" jdbcType="INTEGER" property="soundArticulation"/>
+        <result column="atmosphere" jdbcType="INTEGER" property="atmosphere"/>
+        <result column="interaction" jdbcType="INTEGER" property="interaction"/>
+
+        <result column="require_ids" jdbcType="VARCHAR" property="requireIds"/>
+
+        <result column="comment_time" jdbcType="TIMESTAMP" property="commentTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        hist_id, user_id, period_id, teacher_id, video_sharpness, sound_articulation,
+        atmosphere, interaction, require_ids, comment_time
+    </sql>
+
+    <select id="selectBySelective" parameterType="com.melot.talkee.driver.domain.ClassroomComment"
+            resultMap="BaseResultMap">
+        select  hist_id, user_id, period_id, teacher_id, video_sharpness, sound_articulation,
+        atmosphere, interaction, require_ids, comment_time
+        from hist_classroom_comment where teacher_id = #{teacherId,jdbcType=INTEGER}
+        and period_id = #{periodId,jdbcType=INTEGER}  and user_id = #{userId,jdbcType=INTEGER}
+        order by comment_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.melot.talkee.driver.domain.ClassroomComment">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_hist_classroom_comment')
+        </selectKey>
+        insert into hist_classroom_comment (hist_id, user_id, period_id, teacher_id, video_sharpness,
+        sound_articulation, atmosphere, interaction, require_ids, comment_time)
+        values (#{histId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{periodId,jdbcType=INTEGER},
+        #{teacherId,jdbcType=INTEGER}, #{videoSharpness,jdbcType=INTEGER},#{soundArticulation,jdbcType=INTEGER},
+        #{atmosphere,jdbcType=INTEGER}, #{interaction,jdbcType=INTEGER}, #{requireIds,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.melot.talkee.driver.domain.ClassroomComment">
+        <selectKey resultType="java.lang.Integer" order="BEFORE" keyProperty="histId">
+            select nextval('seq_hist_classroom_comment')
+        </selectKey>
+        insert into hist_classroom_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                hist_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="periodId != null">
+                period_id,
+            </if>
+            <if test="teacherId != null">
+                teacher_id,
+            </if>
+
+            <if test="videoSharpness != null">
+                video_sharpness,
+            </if>
+            <if test="soundArticulation != null">
+                sound_articulation,
+            </if>
+            <if test="atmosphere != null">
+                atmosphere,
+            </if>
+            <if test="interaction != null">
+                interaction,
+            </if>
+
+            <if test="requireIds != null">
+                require_ids,
+            </if>
+
+            <if test="commentTime != null">
+                comment_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="histId != null">
+                #{histId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+
+            <if test="periodId != null">
+                #{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                #{teacherId,jdbcType=INTEGER},
+            </if>
+
+            <if test="videoSharpness != null">
+                #{videoSharpness,jdbcType=INTEGER},
+            </if>
+            <if test="soundArticulation != null">
+                #{soundArticulation,jdbcType=INTEGER},
+            </if>
+
+            <if test="atmosphere != null">
+                #{atmosphere,jdbcType=INTEGER},
+            </if>
+            <if test="interaction != null">
+                #{interaction,jdbcType=INTEGER},
+            </if>
+            <if test="requireIds != null">
+                #{requireIds,jdbcType=VARCHAR},
+            </if>
+            <if test="commentTime != null">
+                #{commentTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.melot.talkee.driver.domain.ClassroomComment">
+        update hist_classroom_comment
+        <set>
+            <if test="histId != null">
+                hist_id=#{histId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id=#{userId,jdbcType=INTEGER},
+            </if>
+            <if test="periodId != null">
+                period_id=#{periodId,jdbcType=INTEGER},
+            </if>
+            <if test="teacherId != null">
+                teacher_id=#{teacherId,jdbcType=INTEGER},
+            </if>
+
+            <if test="videoSharpness != null">
+                video_sharpness=#{videoSharpness,jdbcType=INTEGER},
+            </if>
+            <if test="soundArticulation != null">
+                sound_articulation=#{soundArticulation,jdbcType=INTEGER},
+            </if>
+            <if test="atmosphere != null">
+                atmosphere=#{atmosphere,jdbcType=INTEGER},
+            </if>
+            <if test="interaction != null">
+                interaction=#{interaction,jdbcType=INTEGER},
+            </if>
+
+            <if test="requireIds != null">
+                require_ids=#{requireIds,jdbcType=VARCHAR},
+            </if>
+
+            <if test="commentTime != null">
+                comment_time=#{commentTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.melot.talkee.driver.domain.ClassroomComment">
+        update hist_classroom_comment
+        set hist_id=#{histId,jdbcType=INTEGER},
+        user_id=#{userId,jdbcType=INTEGER},
+        period_id=#{periodId,jdbcType=INTEGER},
+        teacher_id=#{teacherId,jdbcType=INTEGER},
+        video_sharpness=#{videoSharpness,jdbcType=INTEGER},
+        sound_articulation=#{soundArticulation,jdbcType=INTEGER},
+        atmosphere=#{atmosphere,jdbcType=INTEGER},
+        interaction=#{interaction,jdbcType=INTEGER},
+        require_ids=#{requireIds,jdbcType=VARCHAR},
+        comment_time=#{commentTime,jdbcType=TIMESTAMP}
+        where hist_id = #{histId,jdbcType=INTEGER}
+    </update>
+</mapper>
